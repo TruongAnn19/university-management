@@ -1,0 +1,29 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: university.management
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/uni_management?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+# --- JWT Configuration ---
+jwt:
+    secret: "HiIamAnAndThisIsAverySecretKeyForUniversityManagementSystem2025"
+    expiration: 86400000 # 1 ngày (ms)
