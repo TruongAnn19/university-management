@@ -1,4 +1,4 @@
-package com.university.management.controller;
+package com.university.management.controller.api;
 
 import com.university.management.exception.ErrorResponse;
 import com.university.management.model.dto.ScoreDto;

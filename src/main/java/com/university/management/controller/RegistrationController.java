@@ -1,6 +1,7 @@
-package com.university.management.controller.apiImpl;
+package com.university.management.controller;
 
-import com.university.management.controller.RegistrationApi;
+import com.university.management.controller.api.RegistrationApi;
+import com.university.management.model.dto.requestDto.RegistrationRequestDto;
 import com.university.management.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +13,9 @@ public class RegistrationController implements RegistrationApi {
     private final RegistrationService registrationService;
 
     @Override
-    public ResponseEntity<String> register(String studentCode, String classCode) {
+    public ResponseEntity<String> register(RegistrationRequestDto request) {
         try {
-            registrationService.registerCourse(studentCode, classCode);
+            registrationService.registerCourse(request.studentCode(), request.classCode());
             return ResponseEntity.ok("Đăng ký thành công!");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

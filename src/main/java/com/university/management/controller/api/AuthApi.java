@@ -1,4 +1,4 @@
-package com.university.management.controller;
+package com.university.management.controller.api;
 
 import com.university.management.model.dto.ChangePasswordRequest;
 import com.university.management.model.dto.requestDto.LoginRequest;

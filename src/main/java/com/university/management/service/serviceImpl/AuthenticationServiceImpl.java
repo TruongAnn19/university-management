@@ -4,6 +4,7 @@ import com.university.management.model.dto.ChangePasswordRequest;
 import com.university.management.model.dto.requestDto.LoginRequest;
 import com.university.management.model.dto.requestDto.RegisterRequest;
 import com.university.management.model.dto.response.AuthResponse;
+import com.university.management.model.entity.Role;
 import com.university.management.model.entity.User;
 import com.university.management.repository.UserRepository;
 import com.university.management.service.AuthenticationService;
@@ -25,18 +26,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthResponse register(RegisterRequest request) {
+        if (request.role() == Role.STUDENT || request.role() == Role.TEACHER) {
+            throw new RuntimeException("Không thể tự đăng ký Sinh viên/Giảng viên. Vui lòng liên hệ Admin.");
+        }
+
         var user = User.builder()
-                .username(request.username()) // Record access: ko có get
+                .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
-                .role(request.role())
+                .role(Role.ADMIN)
                 .build();
 
         userRepository.save(user);
-
         var jwtToken = jwtUtils.generateToken(user.getUsername());
-
-        // Record constructor mặc định (Canonical constructor)
-        return new AuthResponse(jwtToken, "Đăng ký thành công");
+        return new AuthResponse(jwtToken, "Tạo Admin thành công");
     }
 
     @Override

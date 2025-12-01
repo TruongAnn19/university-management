@@ -1,6 +1,6 @@
-package com.university.management.controller.apiImpl;
+package com.university.management.controller;
 
-import com.university.management.controller.AuthApi;
+import com.university.management.controller.api.AuthApi;
 import com.university.management.model.dto.ChangePasswordRequest;
 import com.university.management.model.dto.requestDto.LoginRequest;
 import com.university.management.model.dto.requestDto.RegisterRequest;
