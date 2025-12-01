@@ -1,6 +1,7 @@
 package com.university.management.controller.apiImpl;
 
 import com.university.management.controller.AuthApi;
+import com.university.management.model.dto.ChangePasswordRequest;
 import com.university.management.model.dto.requestDto.LoginRequest;
 import com.university.management.model.dto.requestDto.RegisterRequest;
 import com.university.management.model.dto.response.AuthResponse;
@@ -22,5 +23,11 @@ public class AuthController implements AuthApi {
     @Override
     public ResponseEntity<AuthResponse> login(LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @Override
+    public ResponseEntity<String> changePassword(ChangePasswordRequest request) {
+        authService.changePassword(request);
+        return ResponseEntity.ok("Đổi mật khẩu thành công");
     }
 }

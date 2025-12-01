@@ -10,9 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -35,9 +37,13 @@ public interface ScoreApi {
     // Định nghĩa API Xem điểm
     @Operation(summary = "Xem bảng điểm", description = "Lấy danh sách điểm của một sinh viên theo Mã SV")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Thành công")
+            @ApiResponse(responseCode = "200", description = "Thành công"),
+            @ApiResponse(responseCode = "400", description = "Sai mã sinh viên")
     })
     @GetMapping("/{studentCode}")
-    @PreAuthorize("hasAnyRole('STUDENT', 'TEACHER', 'ADMIN')")
+    @PreAuthorize("@customSecurity.isOwnerOrTeacher(#studentCode)")
     ResponseEntity<List<ScoreDto>> getStudentScores(@PathVariable("studentCode") String studentCode);
+
+    @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<String> importExcel(@RequestParam("file") MultipartFile file);
 }
