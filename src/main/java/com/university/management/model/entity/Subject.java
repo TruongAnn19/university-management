@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 @Data
 @Entity
@@ -12,6 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "subjects")
+@SQLDelete(sql = "UPDATE subjects SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +30,13 @@ public class Subject {
 
     @Column(name = "credits")
     private Integer credits;
+
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    private boolean isDeleted = false;
+
+    @Column(columnDefinition = "int default 30")
+    private Integer processPercent = 30;
+
+    @Column(columnDefinition = "int default 70")
+    private Integer finalPercent = 70;
 }

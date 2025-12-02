@@ -24,26 +24,23 @@ import java.time.format.DateTimeFormatter;
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder; // Cần cái này để mã hóa pass "123" -> "$2a$..."
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    @Transactional // Quan trọng: Nếu lỗi ở bước tạo Student thì Rollback luôn cả User
+    @Transactional
     public void importStudents(MultipartFile file) {
         if (file.isEmpty()) throw new RuntimeException("File rỗng");
 
         try (var workbook = new XSSFWorkbook(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
 
-            // Duyệt từ dòng 1 (bỏ dòng tiêu đề)
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
 
-                // 1. Đọc dữ liệu từ Excel
                 String username = row.getCell(0).getStringCellValue();
                 String rawPassword = "";
 
-                // Xử lý password (đôi khi excel hiểu số 123 là number)
                 if (row.getCell(1).getCellType() == org.apache.poi.ss.usermodel.CellType.NUMERIC) {
                     rawPassword = String.valueOf((int) row.getCell(1).getNumericCellValue());
                 } else {
@@ -53,32 +50,25 @@ public class StudentServiceImpl implements StudentService {
                 String studentCode = row.getCell(2).getStringCellValue();
                 String fullName = row.getCell(3).getStringCellValue();
                 String className = row.getCell(4).getStringCellValue();
-                String dobString = row.getCell(5).getStringCellValue(); // Giả sử nhập text: 2006-01-15
-
-                // Kiểm tra trùng lặp
+                String dobString = row.getCell(5).getStringCellValue();
                 if (userRepository.findByUsername(username).isPresent()) {
-                    continue; // Nếu user tồn tại rồi thì bỏ qua (hoặc ném lỗi tùy bạn)
+                    continue;
                 }
 
-                // 2. TẠO USER TRƯỚC
                 var user = User.builder()
                         .username(username)
-                        .password(passwordEncoder.encode(rawPassword)) // Mã hóa ngay
+                        .password(passwordEncoder.encode(rawPassword))
                         .role(Role.STUDENT)
                         .build();
 
-                // Lưu User để có ID (nhưng chưa commit transaction)
-                // Trong JPA, khi set User vào Student với CascadeType.ALL, ta có thể không cần save user riêng
-                // Nhưng save riêng cho chắc chắn và dễ debug
                 user = userRepository.save(user);
 
-                // 3. TẠO STUDENT VÀ GẮN USER VÀO
                 var student = Student.builder()
                         .studentCode(studentCode)
                         .fullName(fullName)
                         .className(className)
                         .dob(LocalDate.parse(dobString, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                        .user(user) // <--- LIÊN KẾT TẠI ĐÂY
+                        .user(user)
                         .build();
 
                 studentRepository.save(student);
@@ -91,17 +81,14 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional
     public void createStudent(StudentRequestDto request) {
-        // 1. Kiểm tra trùng Username
         if (userRepository.findByUsername(request.username()).isPresent()) {
             throw new RuntimeException("Username đã tồn tại: " + request.username());
         }
 
-        // 2. Kiểm tra trùng Mã SV
         if (studentRepository.findByStudentCode(request.studentCode()).isPresent()) {
             throw new RuntimeException("Mã sinh viên đã tồn tại: " + request.studentCode());
         }
 
-        // 3. Tạo User (Tài khoản)
         var user = User.builder()
                 .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
@@ -109,7 +96,6 @@ public class StudentServiceImpl implements StudentService {
                 .build();
         userRepository.save(user);
 
-        // 4. Tạo Student (Hồ sơ)
         var student = Student.builder()
                 .studentCode(request.studentCode())
                 .fullName(request.fullName())

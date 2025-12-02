@@ -2,6 +2,9 @@ package com.university.management.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 @Getter
 @Setter
@@ -10,6 +13,8 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "teachers")
+@SQLDelete(sql = "UPDATE teachers SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +36,8 @@ public class Teacher {
     @ManyToOne
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
+
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    private boolean isDeleted = false;
+
 }

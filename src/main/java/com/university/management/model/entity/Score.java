@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 @Data
 @Entity
@@ -12,6 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "scores")
+@SQLDelete(sql = "UPDATE scores SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 public class Score {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,11 +39,26 @@ public class Score {
     @Column(name = "total_score")
     private Double totalScore;
 
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    private boolean isDeleted = false;
+
     @PrePersist
     @PreUpdate
     public void calculateTotal() {
-        if (processScore != null && finalScore != null) {
-            this.totalScore = (processScore * 0.3) + (finalScore * 0.7);
+        if (processScore == null || finalScore == null) {
+            return;
         }
+        double pPercent = 0.3;
+        double fPercent = 0.7;
+
+        if (subject != null) {
+            if (subject.getProcessPercent() != null) {
+                pPercent = subject.getProcessPercent() / 100.0;
+            }
+            if (subject.getFinalPercent() != null) {
+                fPercent = subject.getFinalPercent() / 100.0;
+            }
+        }
+        this.totalScore = (processScore * pPercent) + (finalScore * fPercent);
     }
 }
