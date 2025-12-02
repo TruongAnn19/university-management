@@ -3,6 +3,7 @@ package com.university.management.controller.api;
 import com.university.management.exception.ErrorResponse;
 import com.university.management.model.dto.ScoreDto;
 import com.university.management.model.dto.requestDto.ScoreRequestDto;
+import com.university.management.model.dto.response.TranscriptResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -42,7 +43,7 @@ public interface ScoreApi {
     })
     @GetMapping("/{studentCode}")
     @PreAuthorize("@customSecurity.isOwnerOrTeacher(#studentCode)")
-    ResponseEntity<List<ScoreDto>> getStudentScores(@PathVariable("studentCode") String studentCode);
+    ResponseEntity<TranscriptResponse> getStudentScores(@PathVariable("studentCode") String studentCode);
 
     @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<String> importExcel(@RequestParam("file") MultipartFile file);

@@ -3,9 +3,8 @@ package com.university.management.service.serviceImpl;
 import com.university.management.mapper.ScoreMapper;
 import com.university.management.model.dto.ScoreDto;
 import com.university.management.model.dto.requestDto.ScoreRequestDto;
-import com.university.management.model.entity.Score;
-import com.university.management.model.entity.Student;
-import com.university.management.model.entity.Subject;
+import com.university.management.model.dto.response.TranscriptResponse;
+import com.university.management.model.entity.*;
 import com.university.management.repository.ScoreRepository;
 import com.university.management.repository.StudentRepository;
 import com.university.management.repository.SubjectRepository;
@@ -20,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.apache.poi.ss.usermodel.*;
 import java.io.IOException;
 
+import java.time.Year;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,11 +53,85 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
+    @Transactional
     @Cacheable(value = "student_scores", key = "#studentCode")
-    public List<ScoreDto> getStudentTranscript(String studentCode) {
-        List<Score> scores = scoreRepository.findByStudent_StudentCode(studentCode);
+    public TranscriptResponse getStudentTranscript(String studentCode) {
+        // 1. Lấy thông tin
+        Student student = studentRepository.findByStudentCode(studentCode)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sinh viên"));
 
-        return scores.stream().map(scoreMapper::toDto).toList();
+        Faculty faculty = student.getFaculty();
+        List<Score> scores = scoreRepository.findByStudent_StudentCode(studentCode);
+        List<ScoreDto> scoreDtos = scores.stream().map(scoreMapper::toDto).toList();
+
+        // 2. Nếu không có khoa (Data lỗi) -> Trả về mặc định
+        if (faculty == null) {
+            return new TranscriptResponse(student.getFullName(), "N/A",
+                    student.getStatus().name(), "Chưa cập nhật thông tin Khoa", scoreDtos);
+        }
+
+        // 3. Nếu trạng thái đã chốt (Tốt nghiệp hoặc Đuổi học) -> Không tính lại nữa
+        if (student.getStatus() == StudentStatus.GRADUATED) {
+            return new TranscriptResponse(student.getFullName(), faculty.getFacultyName(),
+                    "ĐÃ TỐT NGHIỆP", "Chúc mừng! Bạn đã hoàn thành chương trình đào tạo.", scoreDtos);
+        }
+        if (student.getStatus() == StudentStatus.EXPELLED) {
+            return new TranscriptResponse(student.getFullName(), faculty.getFacultyName(),
+                    "BUỘC THÔI HỌC", "Cảnh báo: Bạn đã bị buộc thôi học do quá thời gian đào tạo.", scoreDtos);
+        }
+
+        // 4. --- THUẬT TOÁN TÍNH TOÁN ---
+
+        // A. Tính thời gian
+        int currentYear = Year.now().getValue();
+        int yearsStudied = currentYear - student.getEnrollmentYear(); // VD: 2025 - 2020 = 5 năm
+        int maxAllowedYears = faculty.getDuration() + 3; // VD: 5 + 3 = 8 năm tối đa
+
+        // B. Tính tín chỉ tích lũy (Chỉ lấy môn qua >= 4.0)
+        int accumulatedCredits = scores.stream()
+                .filter(s -> s.getTotalScore() != null && s.getTotalScore() >= 4.0)
+                .mapToInt(s -> s.getSubject().getCredits())
+                .sum();
+
+        String statusStr = "ĐANG THEO HỌC";
+        String message;
+
+        // --- LUỒNG XÉT DUYỆT ---
+
+        // TRƯỜNG HỢP 1: ĐỦ TÍN CHỈ (Ưu tiên số 1 - Hỗ trợ học vượt)
+        // Dù mới học 2 năm mà đủ tín chỉ -> Vẫn cho tốt nghiệp
+        if (accumulatedCredits >= faculty.getRequiredCredits()) {
+            student.setStatus(StudentStatus.GRADUATED);
+            statusStr = "ĐÃ TỐT NGHIỆP";
+            message = String.format("Xuất sắc! Bạn đã tích lũy đủ %d/%d tín chỉ.",
+                    accumulatedCredits, faculty.getRequiredCredits());
+        }
+        // TRƯỜNG HỢP 2: QUÁ HẠN ĐÀO TẠO (Bị đuổi học)
+        // Chưa đủ tín chỉ MÀ thời gian học lố quá mức cho phép
+        else if (yearsStudied > maxAllowedYears) {
+            student.setStatus(StudentStatus.EXPELLED);
+            statusStr = "BUỘC THÔI HỌC";
+            message = String.format("Bạn đã học %d năm (Quá hạn tối đa %d năm). Kết quả học tập bị hủy bỏ.",
+                    yearsStudied, maxAllowedYears);
+        }
+        // TRƯỜNG HỢP 3: BÌNH THƯỜNG
+        else {
+            int remainingCredits = faculty.getRequiredCredits() - accumulatedCredits;
+            int remainingYears = maxAllowedYears - yearsStudied;
+            message = String.format("Tiến độ: %d/%d tín chỉ. Còn thiếu %d tín chỉ. Bạn còn %d năm để hoàn thành.",
+                    accumulatedCredits, faculty.getRequiredCredits(), remainingCredits, remainingYears);
+        }
+
+        // Lưu trạng thái mới vào DB
+        studentRepository.save(student);
+
+        return new TranscriptResponse(
+                student.getFullName(),
+                faculty.getFacultyName(),
+                statusStr,
+                message,
+                scoreDtos
+        );
     }
 
     @Override

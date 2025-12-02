@@ -25,10 +25,22 @@ public class Student {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    @Column(name = "dob", nullable = false)
     private LocalDate dob;
 
     @Column(name = "class_name")
     private String className;
+
+    @Column(name = "enrollment_year")
+    private Integer enrollmentYear;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private StudentStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "faculty_id")
+    private Faculty faculty;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

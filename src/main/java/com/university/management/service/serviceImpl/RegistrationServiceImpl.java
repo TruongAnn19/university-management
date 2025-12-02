@@ -3,6 +3,7 @@ package com.university.management.service.serviceImpl;
 import com.university.management.model.entity.CourseClass;
 import com.university.management.model.entity.Registration;
 import com.university.management.model.entity.Student;
+import com.university.management.model.entity.StudentStatus;
 import com.university.management.service.RegistrationService;
 
 import com.university.management.repository.CourseClassRepository;
@@ -28,6 +29,13 @@ public class RegistrationServiceImpl implements RegistrationService {
         Student student = studentRepository.findByStudentCode(studentCode)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sinh viên: " + studentCode));
 
+        if (student.getStatus() == StudentStatus.GRADUATED) {
+            throw new RuntimeException("Bạn đã tốt nghiệp! Không thể đăng ký thêm môn học.");
+        }
+
+        if (student.getStatus() == StudentStatus.EXPELLED) {
+            throw new RuntimeException("Tài khoản đang bị khóa do buộc thôi học. Vui lòng liên hệ phòng đào tạo.");
+        }
         // 2. Tìm Lớp học phần
         CourseClass courseClass = courseClassRepository.findByClassCode(classCode)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy lớp học phần: " + classCode));

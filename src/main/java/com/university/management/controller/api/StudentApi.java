@@ -18,11 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 public interface StudentApi {
     @Operation(summary = "Import danh sách sinh viên từ Excel")
     @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')") // Chỉ Admin mới được tạo user hàng loạt
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<String> importStudents(@RequestParam("file") MultipartFile file);
 
     @Operation(summary = "Thêm mới 1 sinh viên (Thủ công)")
-    @PostMapping // Đường dẫn gốc /api/students
+    @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<String> createStudent(@RequestBody @Valid StudentRequestDto request);
 }

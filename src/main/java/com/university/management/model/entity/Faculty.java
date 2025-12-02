@@ -20,4 +20,10 @@ public class Faculty {
 
     @Column(name = "faculty_name", nullable = false)
     private String facultyName;
+
+    @Column(name = "duration", nullable = false)
+    private Integer duration;
+
+    @Column(name = "required_credits")
+    private Integer requiredCredits;
 }

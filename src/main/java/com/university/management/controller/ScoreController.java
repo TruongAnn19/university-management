@@ -3,6 +3,7 @@ package com.university.management.controller;
 import com.university.management.controller.api.ScoreApi;
 import com.university.management.model.dto.ScoreDto;
 import com.university.management.model.dto.requestDto.ScoreRequestDto;
+import com.university.management.model.dto.response.TranscriptResponse;
 import com.university.management.service.ScoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class ScoreController implements ScoreApi {
     }
 
     @Override
-    public ResponseEntity<List<ScoreDto>> getStudentScores(String studentCode) {
+    public ResponseEntity<TranscriptResponse> getStudentScores(String studentCode) {
         return ResponseEntity.ok(scoreService.getStudentTranscript(studentCode));
     }
 
