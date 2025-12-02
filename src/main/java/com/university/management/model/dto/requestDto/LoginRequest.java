@@ -7,6 +7,8 @@ public record LoginRequest(
         String username,
 
         @NotBlank(message = "Password không được để trống")
-        String password
+        String password,
+
+        String recaptchaToken
 ) {
 }

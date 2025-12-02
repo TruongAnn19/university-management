@@ -8,6 +8,7 @@ import com.university.management.model.entity.Role;
 import com.university.management.model.entity.User;
 import com.university.management.repository.UserRepository;
 import com.university.management.service.AuthenticationService;
+import com.university.management.service.CaptchaService;
 import com.university.management.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +24,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
+    private final CaptchaService captchaService;
 
     @Override
     public AuthResponse register(RegisterRequest request) {
@@ -43,6 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthResponse login(LoginRequest request) {
+        captchaService.verifyCaptcha(request.recaptchaToken());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username(), request.password())
         );
@@ -57,24 +60,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void changePassword(ChangePasswordRequest request) {
-        // 1. Lấy user đang đăng nhập từ Token (Security Context)
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var currentUsername = authentication.getName();
 
         var user = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new IllegalStateException("Không tìm thấy người dùng"));
 
-        // 2. Kiểm tra mật khẩu cũ có đúng không
         if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
             throw new IllegalStateException("Mật khẩu cũ không chính xác");
         }
 
-        // 3. Kiểm tra mật khẩu xác nhận
         if (!request.newPassword().equals(request.confirmationPassword())) {
             throw new IllegalStateException("Mật khẩu xác nhận không trùng khớp");
         }
 
-        // 4. Mã hóa mật khẩu mới và lưu xuống DB
         user.setPassword(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
     }
