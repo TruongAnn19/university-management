@@ -18,10 +18,14 @@ public class CourseClass {
     @Column(unique = true, nullable = false)
     private String classCode;
 
+    @Column(name = "max_slot")
     private Integer maxSlot;
+
+    @Column(name = "current_slot")
     private Integer currentSlot;
 
     // CƠ CHẾ CHỐNG TRANH CHẤP DỮ LIỆU
     @Version
+    @Column(name = "version")
     private Long version;
 }

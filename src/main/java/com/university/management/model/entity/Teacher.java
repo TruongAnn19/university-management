@@ -21,6 +21,7 @@ public class Teacher {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    @Column(name = "degree")
     private String degree;
 
     @OneToOne(cascade = CascadeType.ALL)

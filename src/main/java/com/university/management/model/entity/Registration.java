@@ -25,5 +25,6 @@ public class Registration {
     @JoinColumn(name = "class_id")
     private CourseClass courseClass;
 
+    @Column(name = "register_time")
     private LocalDateTime registerTime;
 }

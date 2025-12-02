@@ -23,5 +23,6 @@ public class Subject {
     @Column(name = "subject_name", nullable = false)
     private String subjectName;
 
+    @Column(name = "credits")
     private Integer credits;
 }

@@ -23,7 +23,7 @@ import java.util.List;
 @Tag(name = "Score Management", description = "API quản lý điểm số sinh viên")
 public interface ScoreApi {
     // Định nghĩa API Nhập điểm
-    @Operation(summary = "Nhập điểm mới", description = "API dùng cho Giảng viên nhập điểm kết thúc học phần")
+    @Operation(summary = "Nhập điểm mới thủ công", description = "API dùng cho Giảng viên nhập điểm kết thúc học phần")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Nhập điểm thành công",
                     content = @Content(schema = @Schema(implementation = ScoreDto.class))),
@@ -45,6 +45,7 @@ public interface ScoreApi {
     @PreAuthorize("@customSecurity.isOwnerOrTeacher(#studentCode)")
     ResponseEntity<TranscriptResponse> getStudentScores(@PathVariable("studentCode") String studentCode);
 
+    @Operation(summary = "Nhập điểm mới", description = "API dùng cho Giảng viên nhập điểm kết thúc học phần bằng file excel")
     @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<String> importExcel(@RequestParam("file") MultipartFile file);
 }
