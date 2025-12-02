@@ -11,4 +11,5 @@ public interface GradeAppealService {
     void reviewAppeal(Long appealId, AppealReviewRequest request);
     List<GradeAppeal> getMyAppeals(String studentCode);
     List<GradeAppeal> getPendingAppeals();
+    List<GradeAppeal> getAppealsByStudent(String studentCode);
 }

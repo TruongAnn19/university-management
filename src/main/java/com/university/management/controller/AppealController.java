@@ -38,4 +38,9 @@ public class AppealController implements AppealApi {
     public ResponseEntity<List<GradeAppeal>> getPendingAppeals() {
         return ResponseEntity.ok(appealService.getPendingAppeals());
     }
+
+    @Override
+    public ResponseEntity<List<GradeAppeal>> getAppealsByStudent(String studentCode) {
+        return ResponseEntity.ok(appealService.getAppealsByStudent(studentCode));
+    }
 }

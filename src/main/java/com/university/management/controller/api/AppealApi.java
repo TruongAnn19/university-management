@@ -21,6 +21,11 @@ public interface AppealApi {
     @PreAuthorize("hasRole('STUDENT')")
     ResponseEntity<String> createAppeal(@Valid @RequestBody AppealRequest request);
 
+    @Operation(summary = "Tìm đơn phúc khảo theo Mã Sinh Viên (Dành cho GV)")
+    @GetMapping("/student/{studentCode}")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')") // Chỉ GV/Admin được soi lịch sử của SV
+    ResponseEntity<List<GradeAppeal>> getAppealsByStudent(@PathVariable String studentCode);
+
     @Operation(summary = "Giáo viên duyệt đơn phúc khảo")
     @PutMapping("/{id}/review")
     @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")

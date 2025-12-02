@@ -85,4 +85,12 @@ public class GradeAppealServiceImpl implements GradeAppealService {
     public List<GradeAppeal> getPendingAppeals() {
         return appealRepository.findByStatus(AppealStatus.PENDING);
     }
+
+    @Override
+    public List<GradeAppeal> getAppealsByStudent(String studentCode) {
+        if (studentRepository.findByStudentCode(studentCode).isEmpty()) {
+            throw new RuntimeException("Mã sinh viên không tồn tại: " + studentCode);
+        }
+        return appealRepository.findByStudent_StudentCode(studentCode);
+    }
 }
