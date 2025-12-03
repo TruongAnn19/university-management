@@ -29,11 +29,19 @@ public class CourseClass {
     @Column(name = "current_slot")
     private Integer currentSlot;
 
-    // CƠ CHẾ CHỐNG TRANH CHẤP DỮ LIỆU
     @Version
     @Column(name = "version")
     private Long version;
 
     @Column(name = "is_deleted", columnDefinition = "boolean default false")
     private boolean isDeleted = false;
+
+    @ManyToOne
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
+
+    @ManyToOne
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
+
 }

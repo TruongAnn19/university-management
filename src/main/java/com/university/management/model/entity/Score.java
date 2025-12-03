@@ -61,4 +61,8 @@ public class Score {
         }
         this.totalScore = (processScore * pPercent) + (finalScore * fPercent);
     }
+
+    @ManyToOne
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
 }

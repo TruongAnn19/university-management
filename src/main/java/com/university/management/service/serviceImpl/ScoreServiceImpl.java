@@ -6,6 +6,7 @@ import com.university.management.model.dto.requestDto.ScoreRequestDto;
 import com.university.management.model.dto.response.TranscriptResponse;
 import com.university.management.model.entity.*;
 import com.university.management.repository.ScoreRepository;
+import com.university.management.repository.SemesterRepository;
 import com.university.management.repository.StudentRepository;
 import com.university.management.repository.SubjectRepository;
 import com.university.management.service.AuditService;
@@ -34,6 +35,7 @@ public class ScoreServiceImpl implements ScoreService {
     private final SubjectRepository subjectRepository;
     private final ScoreMapper scoreMapper;
     private final AuditService auditService;
+    private final SemesterRepository semesterRepository;
 
     @Override
     @CacheEvict(value = "student_scores", key = "#request.studentCode()")
@@ -49,8 +51,11 @@ public class ScoreServiceImpl implements ScoreService {
         Subject subject = subjectRepository.findBySubjectCode(request.getSubjectCode())
                 .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy môn học mã " + request.getSubjectCode()));
 
-        Optional<Score> existingScoreOpt = scoreRepository.findByStudent_StudentCodeAndSubject_SubjectCode(
-                request.getStudentCode(), request.getSubjectCode());
+        Semester currentSemester = semesterRepository.findByIsActiveTrue()
+                .orElseThrow(() -> new RuntimeException("Lỗi: Không có học kỳ nào đang mở!"));
+
+        Optional<Score> existingScoreOpt = scoreRepository.findByStudent_StudentCodeAndSubject_SubjectCodeAndSemester(
+                request.getStudentCode(), request.getSubjectCode(), currentSemester);
 
         Score scoreToSave;
         String actionType;
@@ -62,7 +67,7 @@ public class ScoreServiceImpl implements ScoreService {
             oldValueStr = String.format("Process: %.1f, Final: %.1f",
                     existingScore.getProcessScore(), existingScore.getFinalScore());
 
-            scoreToSave = existingScore;
+            scoreToSave = existingScoreOpt.get();
             scoreToSave.setProcessScore(request.getProcessScore());
             scoreToSave.setFinalScore(request.getFinalScore());
         } else {
@@ -71,6 +76,7 @@ public class ScoreServiceImpl implements ScoreService {
             scoreToSave = Score.builder()
                     .student(student)
                     .subject(subject)
+                    .semester(currentSemester)
                     .processScore(request.getProcessScore())
                     .finalScore(request.getFinalScore())
                     .build();
