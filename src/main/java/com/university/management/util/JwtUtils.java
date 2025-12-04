@@ -1,5 +1,6 @@
 package com.university.management.util;
 
+import com.university.management.model.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -18,24 +19,22 @@ public class JwtUtils {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    // 1. Lấy Signing Key từ chuỗi bí mật
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey); // Nếu key base64
-        // Hoặc nếu key thường: return Keys.hmacShaKeyFor(secretKey.getBytes());
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // 2. Tạo Token từ Username
-    public String generateToken(String username) {
+    public String generateToken(String username, String role) {
+        User user = new User();
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role",role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // 3. Lấy Username từ Token
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
