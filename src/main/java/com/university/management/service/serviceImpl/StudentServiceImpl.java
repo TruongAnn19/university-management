@@ -9,6 +9,7 @@ import com.university.management.repository.UserRepository;
 import com.university.management.service.StudentService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -33,24 +34,21 @@ public class StudentServiceImpl implements StudentService {
 
         try (var workbook = new XSSFWorkbook(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
+            DataFormatter dataFormatter = new DataFormatter();
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
 
-                String username = row.getCell(0).getStringCellValue();
-                String rawPassword = "";
+                String username = dataFormatter.formatCellValue(row.getCell(0)).trim();
+                String rawPassword = dataFormatter.formatCellValue(row.getCell(1)).trim();
+                String studentCode = dataFormatter.formatCellValue(row.getCell(2)).trim();
+                String fullName = dataFormatter.formatCellValue(row.getCell(3)).trim();
+                String className = dataFormatter.formatCellValue(row.getCell(4)).trim();
+                String dobString = dataFormatter.formatCellValue(row.getCell(5)).trim();
 
-                if (row.getCell(1).getCellType() == org.apache.poi.ss.usermodel.CellType.NUMERIC) {
-                    rawPassword = String.valueOf((int) row.getCell(1).getNumericCellValue());
-                } else {
-                    rawPassword = row.getCell(1).getStringCellValue();
-                }
+                if (username.isEmpty() || studentCode.isEmpty()) continue;
 
-                String studentCode = row.getCell(2).getStringCellValue();
-                String fullName = row.getCell(3).getStringCellValue();
-                String className = row.getCell(4).getStringCellValue();
-                String dobString = row.getCell(5).getStringCellValue();
                 if (userRepository.findByUsername(username).isPresent()) {
                     continue;
                 }
@@ -60,14 +58,20 @@ public class StudentServiceImpl implements StudentService {
                         .password(passwordEncoder.encode(rawPassword))
                         .role(Role.STUDENT)
                         .build();
+                userRepository.save(user);
 
-                user = userRepository.save(user);
+                LocalDate dob;
+                try {
+                    dob = LocalDate.parse(dobString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                } catch (Exception e) {
+                    dob = LocalDate.of(2000, 1, 1);
+                }
 
                 var student = Student.builder()
                         .studentCode(studentCode)
                         .fullName(fullName)
                         .className(className)
-                        .dob(LocalDate.parse(dobString, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                        .dob(dob)
                         .user(user)
                         .build();
 

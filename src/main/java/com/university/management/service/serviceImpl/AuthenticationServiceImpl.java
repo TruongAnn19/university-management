@@ -39,7 +39,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
 
         userRepository.save(user);
-        var jwtToken = jwtUtils.generateToken(user.getUsername());
+        var jwtToken = jwtUtils.generateToken(user.getUsername(), String.valueOf(user.getRole()));
         return new AuthResponse(jwtToken, "Tạo Admin thành công");
     }
 
@@ -53,7 +53,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = userRepository.findByUsername(request.username())
                 .orElseThrow();
 
-        var jwtToken = jwtUtils.generateToken(user.getUsername());
+        var jwtToken = jwtUtils.generateToken(user.getUsername(),  String.valueOf(user.getRole()));
 
         return new AuthResponse(jwtToken, "Đăng nhập thành công");
     }

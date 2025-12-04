@@ -35,10 +35,9 @@ springdoc:
   packages-to-scan: com.university.management.controller
   use-fqn: true
 
-# --- JWT Configuration ---
 jwt:
-    secret: "HiIamAnAndThisIsAverySecretKeyForUniversityManagementSystem2025"
-    expiration: 86400000 # 1 ngày (ms)
+  secret: "HiIamAnAndThisIsAverySecretKeyForUniversityManagementSystem2025"
+  expiration: 86400000 # 1 ngày (ms)
 
 google:
   recaptcha:

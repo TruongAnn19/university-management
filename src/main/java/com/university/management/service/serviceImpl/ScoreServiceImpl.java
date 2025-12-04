@@ -13,6 +13,7 @@ import com.university.management.service.AuditService;
 import com.university.management.service.ScoreService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -71,7 +72,6 @@ public class ScoreServiceImpl implements ScoreService {
             scoreToSave.setProcessScore(request.getProcessScore());
             scoreToSave.setFinalScore(request.getFinalScore());
         } else {
-            // Trường hợp CREATE
             actionType = "CREATE_SCORE";
             scoreToSave = Score.builder()
                     .student(student)
@@ -170,19 +170,43 @@ public class ScoreServiceImpl implements ScoreService {
             throw new RuntimeException("File excel rỗng");
         }
 
+        Semester currentSemester = semesterRepository.findByIsActiveTrue()
+                .orElseThrow(() -> new RuntimeException("Không có học kỳ nào đang mở đăng ký!"));
+
         try (var workbook = new XSSFWorkbook(file.getInputStream())) {
             Sheet sheet = workbook.getSheetAt(0);
+            DataFormatter dataFormatter = new DataFormatter();
+
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
 
-                String studentCode = row.getCell(0).getStringCellValue();
-                String subjectCode = row.getCell(1).getStringCellValue();
-                double processScore = row.getCell(2).getNumericCellValue();
-                double finalScore = row.getCell(3).getNumericCellValue();
+                String studentCode = dataFormatter.formatCellValue(row.getCell(0)).trim();
+                String subjectCode = dataFormatter.formatCellValue(row.getCell(1)).trim();
 
-                // Tạo DTO
+                if (studentCode.isEmpty() || subjectCode.isEmpty()) continue;
+
+                boolean exists = scoreRepository.findByStudent_StudentCodeAndSubject_SubjectCodeAndSemester(
+                        studentCode, subjectCode, currentSemester
+                ).isPresent();
+
+                if (exists) {
+                    continue;
+                }
+
+                double processScore = 0.0;
+                double finalScore = 0.0;
+                try {
+                    String pScoreStr = dataFormatter.formatCellValue(row.getCell(2)).trim();
+                    String fScoreStr = dataFormatter.formatCellValue(row.getCell(3)).trim();
+
+                    processScore = pScoreStr.isEmpty() ? 0.0 : Double.parseDouble(pScoreStr);
+                    finalScore = fScoreStr.isEmpty() ? 0.0 : Double.parseDouble(fScoreStr);
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Lỗi định dạng điểm số tại dòng " + (i + 1));
+                }
+
                 var requestDto = new ScoreRequestDto(
                         studentCode,
                         subjectCode,
