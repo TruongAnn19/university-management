@@ -164,7 +164,7 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "student_scores", allEntries = true)
+//    @CacheEvict(value = "student_scores", allEntries = true)
     public void importScores(MultipartFile file) {
         if (file.isEmpty()) {
             throw new RuntimeException("File excel rỗng");
