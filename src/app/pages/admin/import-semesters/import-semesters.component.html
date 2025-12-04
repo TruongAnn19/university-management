@@ -1,0 +1,27 @@
+<div class="import-container">
+  <h2>📅 Import Danh Sách Học Kỳ</h2>
+  
+  <div class="note-box">
+    <p>⚠️ <strong>Cấu trúc File Excel:</strong></p>
+    <ul>
+      <li>Cột 1: Tên Học Kỳ (VD: Học kỳ 2 Năm 2024-2025)</li>
+      <li>Cột 2: Mã Kỳ (VD: 2024_2) - <strong>Duy nhất</strong></li>
+      <li>Cột 3: Ngày Bắt Đầu (yyyy-MM-dd)</li>
+      <li>Cột 4: Ngày Kết Thúc (yyyy-MM-dd)</li>
+      <li>Cột 5: Trạng Thái (1 = Mở, 0 = Đóng)</li>
+    </ul>
+  </div>
+
+  <div class="upload-box">
+    <input type="file" (change)="onFileSelected($event)" accept=".xlsx, .xls" class="file-input">
+    <div *ngIf="selectedFile" class="file-info">📄 {{ selectedFile.name }}</div>
+    <button (click)="onUpload()" [disabled]="!selectedFile || isLoading" class="upload-btn">
+      <span *ngIf="isLoading">⏳ Đang xử lý...</span>
+      <span *ngIf="!isLoading">📤 Tải lên</span>
+    </button>
+  </div>
+
+  <div *ngIf="message" class="alert" [ngClass]="{'alert-success': !isError, 'alert-danger': isError}">
+    {{ message }}
+  </div>
+</div>

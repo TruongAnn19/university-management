@@ -28,6 +28,7 @@ import { AuthService } from '../../../services/auth/auth.service';
         <li><a routerLink="/import-students" routerLinkActive="active">📥 Import Sinh viên</a></li>
         <li><a routerLink="/import-teachers" routerLinkActive="active">👨‍🏫 Import Giảng viên</a></li>
         <li><a routerLink="/import-subjects" routerLinkActive="active">📚 Import Môn học</a></li>
+        <li><a routerLink="/import-semesters" routerLinkActive="active">📅 Import Học kỳ</a></li>
         <li><a routerLink="/import-scores" routerLinkActive="active">✍️ Import Điểm</a></li>
       </ng-container>
 
