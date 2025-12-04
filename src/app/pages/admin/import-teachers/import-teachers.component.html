@@ -1,0 +1,28 @@
+<div class="import-container">
+  <h2>📥 Import Danh Sách Giảng Viên</h2>
+  
+  <div class="note-box">
+    <p>⚠️ <strong>Lưu ý quan trọng:</strong></p>
+    <ul>
+      <li>File Excel phải có cột <strong>Mã Khoa</strong> chính xác (VD: CNTT, ATTT).</li>
+      <li>Nếu Mã Khoa không tồn tại trong hệ thống, quá trình import sẽ dừng lại ở dòng đó.</li>
+    </ul>
+  </div>
+
+  <div class="upload-box">
+    <input type="file" (change)="onFileSelected($event)" accept=".xlsx, .xls" class="file-input">
+    
+    <div *ngIf="selectedFile" class="file-info">
+      📄 {{ selectedFile.name }} ({{ (selectedFile.size / 1024) | number:'1.0-2' }} KB)
+    </div>
+
+    <button (click)="onUpload()" [disabled]="!selectedFile || isLoading" class="upload-btn">
+      <span *ngIf="isLoading">⏳ Đang xử lý...</span>
+      <span *ngIf="!isLoading">🚀 Tải lên hệ thống</span>
+    </button>
+  </div>
+
+  <div *ngIf="message" class="alert" [ngClass]="{'alert-success': !isError, 'alert-danger': isError}">
+    {{ message }}
+  </div>
+</div>

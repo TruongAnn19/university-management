@@ -1,0 +1,31 @@
+<div class="import-container">
+  <h2>📚 Import Danh Sách Môn Học</h2>
+  
+  <div class="note-box">
+    <p>⚠️ <strong>Cấu trúc File Excel:</strong></p>
+    <ul>
+      <li>Cột 1: Mã Môn (VD: JAVA01) - <strong>Bắt buộc</strong></li>
+      <li>Cột 2: Tên Môn (VD: Lập trình Java) - <strong>Bắt buộc</strong></li>
+      <li>Cột 3: Số Tín Chỉ (VD: 3)</li>
+      <li>Cột 4: % Điểm Quá Trình (VD: 30)</li>
+      <li>Cột 5: % Điểm Thi (VD: 70)</li>
+    </ul>
+  </div>
+
+  <div class="upload-box">
+    <input type="file" (change)="onFileSelected($event)" accept=".xlsx, .xls" class="file-input">
+    
+    <div *ngIf="selectedFile" class="file-info">
+      📄 {{ selectedFile.name }}
+    </div>
+
+    <button (click)="onUpload()" [disabled]="!selectedFile || isLoading" class="upload-btn">
+      <span *ngIf="isLoading">⏳ Đang xử lý...</span>
+      <span *ngIf="!isLoading">📤 Tải lên</span>
+    </button>
+  </div>
+
+  <div *ngIf="message" class="alert" [ngClass]="{'alert-success': !isError, 'alert-danger': isError}">
+    {{ message }}
+  </div>
+</div>

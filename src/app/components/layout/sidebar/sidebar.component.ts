@@ -25,6 +25,10 @@ import { AuthService } from '../../../services/auth/auth.service';
         <li><a routerLink="/manage-scores" routerLinkActive="active">✍️ Nhập điểm</a></li>
         <li><a routerLink="/students" routerLinkActive="active">👨‍🎓 Quản lý Sinh viên</a></li>
         <li><a routerLink="/appeals" routerLinkActive="active">📩 Duyệt phúc khảo</a></li>
+        <li><a routerLink="/import-students" routerLinkActive="active">📥 Import Sinh viên</a></li>
+        <li><a routerLink="/import-teachers" routerLinkActive="active">👨‍🏫 Import Giảng viên</a></li>
+        <li><a routerLink="/import-subjects" routerLinkActive="active">📚 Import Môn học</a></li>
+        <li><a routerLink="/import-scores" routerLinkActive="active">✍️ Import Điểm</a></li>
       </ng-container>
 
       <li class="logout" (click)="logout()">🚪 Đăng xuất</li>
@@ -34,11 +38,11 @@ import { AuthService } from '../../../services/auth/auth.service';
 })
 export class SidebarComponent {
   authService = inject(AuthService);
-  
+
   user = this.authService.getUserInfo();
 
-  get isStudent() { return this.user?.role === 'ROLE_STUDENT'; }
-  get isAdminOrTeacher() { return ['ROLE_ADMIN', 'ROLE_TEACHER'].includes(this.user?.role); }
+  get isStudent() { return this.user?.role === 'STUDENT'; }
+  get isAdminOrTeacher() { return ['ADMIN', 'TEACHER'].includes(this.user?.role); }
 
   logout() {
     this.authService.logout();

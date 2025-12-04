@@ -36,6 +36,9 @@ export class AuthService {
   logout() {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem(this.tokenKey);
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = '/login';
     }
     this.router.navigate(['/login']);
   }

@@ -1,23 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment'; 
 
-export interface StudentDTO {
-  id: number;
-  studentCode: string;
-  fullName: string;
-  classCode: string; // Lớp hành chính (VD: CNTT-K65)
-  email: string;
-}
-
-@Injectable({ providedIn: 'root' })
-export class StudentService {
+@Injectable({
+  providedIn: 'root'
+})
+export class TeacherService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/students`;
+  private apiUrl = `${environment.apiUrl}/teachers`;
 
-  // Hàm upload file
-  importStudents(file: File) {
+  importTeachers(file: File) {
     const formData = new FormData();
     formData.append('file', file);
 

@@ -1,16 +1,25 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment'; 
-import { TranscriptResponse } from '../../models/score/score.model'; 
+import { environment } from '../../../environments/environment';
+import { TranscriptResponse } from '../../models/score/score.model';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class ScoreService {
-  private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/scores`;
+    private http = inject(HttpClient);
+    private apiUrl = `${environment.apiUrl}/scores`;
 
-  getMyTranscript(studentCode: string) {
-    return this.http.get<TranscriptResponse>(`${this.apiUrl}/${studentCode}`);
-  }
+    getMyTranscript(studentCode: string) {
+        return this.http.get<TranscriptResponse>(`${this.apiUrl}/${studentCode}`);
+    }
+
+    importScores(file: File) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        return this.http.post(`${this.apiUrl}/import`, formData, {
+            responseType: 'text'
+        });
+    }
 }

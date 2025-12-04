@@ -1,0 +1,30 @@
+<div class="import-container">
+  <h2>📊 Import Bảng Điểm</h2>
+  
+  <div class="note-box">
+    <p>⚠️ <strong>Quy định File Excel:</strong></p>
+    <ul>
+      <li><strong>Cột 1:</strong> Mã Sinh Viên (VD: B20DCCN001)</li>
+      <li><strong>Cột 2:</strong> Mã Môn Học (VD: JAVA01)</li>
+      <li><strong>Cột 3:</strong> Điểm Quá Trình (0 - 10)</li>
+      <li><strong>Cột 4:</strong> Điểm Thi (0 - 10)</li>
+    </ul>
+  </div>
+
+  <div class="upload-box">
+    <input type="file" (change)="onFileSelected($event)" accept=".xlsx, .xls" class="file-input">
+    
+    <div *ngIf="selectedFile" class="file-info">
+      📄 {{ selectedFile.name }}
+    </div>
+
+    <button (click)="onUpload()" [disabled]="!selectedFile || isLoading" class="upload-btn">
+      <span *ngIf="isLoading">⏳ Đang xử lý...</span>
+      <span *ngIf="!isLoading">📤 Tải điểm lên</span>
+    </button>
+  </div>
+
+  <div *ngIf="message" class="alert" [ngClass]="{'alert-success': !isError, 'alert-danger': isError}">
+    {{ message }}
+  </div>
+</div>
