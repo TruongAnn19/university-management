@@ -1,0 +1,55 @@
+<div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; height: 100vh;">
+  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+    <span class="fs-4 fw-bold">Uni Management</span>
+  </a>
+  <hr>
+  <ul class="nav nav-pills flex-column mb-auto">
+    <li class="nav-item">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link text-white">
+        <i class="fa fa-home me-2"></i> Tổng quan
+      </a>
+    </li>
+
+    <li class="nav-header mt-3 text-uppercase text-muted" style="font-size: 0.8rem;">Đào tạo</li>
+    <li>
+      <a routerLink="/students" routerLinkActive="active" class="nav-link text-white">
+        <i class="fa fa-user-graduate me-2"></i> Quản lý Sinh viên
+      </a>
+    </li>
+    <li>
+      <a routerLink="/subjects" routerLinkActive="active" class="nav-link text-white">
+        <i class="fa fa-book me-2"></i> Môn học
+      </a>
+    </li>
+    <li>
+      <a routerLink="/classes" routerLinkActive="active" class="nav-link text-white">
+        <i class="fa fa-chalkboard-teacher me-2"></i> Lớp học phần
+      </a>
+    </li>
+
+    <li class="nav-header mt-3 text-uppercase text-muted" style="font-size: 0.8rem;">Quản lý Điểm</li>
+    <li>
+      <a routerLink="/grades/input" routerLinkActive="active" class="nav-link text-white">
+        <i class="fa fa-edit me-2"></i> Nhập điểm
+      </a>
+    </li>
+    <li>
+      <a routerLink="/grades/transcript" routerLinkActive="active" class="nav-link text-white">
+        <i class="fa fa-file-alt me-2"></i> Bảng điểm tổng hợp
+      </a>
+    </li>
+  </ul>
+  <hr>
+  
+  <div class="dropdown">
+    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+      <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+      <strong>Admin</strong>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+      <li><a class="dropdown-item" href="#">Hồ sơ</a></li>
+      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+    </ul>
+  </div>
+</div>

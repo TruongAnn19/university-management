@@ -1,0 +1,9 @@
+:host { display: block; height: 100%; background: #2c3e50; color: #ecf0f1; }
+.sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid #34495e; }
+.menu-list { list-style: none; padding: 0; margin: 0; }
+.menu-list li a, .menu-list li.logout {
+  display: block; padding: 15px 20px; color: #bdc3c7; text-decoration: none; cursor: pointer; transition: 0.3s;
+  &:hover { background: #34495e; color: white; }
+  &.active { background: #3498db; color: white; border-left: 4px solid #fff; }
+}
+.logout { border-top: 1px solid #34495e; margin-top: 20px; color: #e74c3c !important; &:hover { background: #c0392b !important; } }
