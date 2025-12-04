@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Recaptcha V3</title>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LedfR4sAAAAAKCV2HH9osQQMqC8HQuN-Ucm9NWJ"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .box { margin-top: 10px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+<h2>Test Google reCAPTCHA v3</h2>
+<p>Lưu ý: Phải chạy trên <b>localhost</b> hoặc domain đã đăng ký.</p>
+
+<button onclick="getToken()">Lấy Token Ngay</button>
+
+<div class="box">
+    <strong>Trạng thái:</strong> <span id="status">Chưa chạy</span>
+</div>
+
+<textarea id="tokenArea" rows="5" style="width:100%; margin-top:10px;" placeholder="Token sẽ hiện ở đây..."></textarea>
+
+<script>
+    const SITE_KEY = '6LedfR4sAAAAAKCV2HH9osQQMqC8HQuN-Ucm9NWJ';
+
+    function getToken() {
+        const statusParams = document.getElementById('status');
+        const tokenArea = document.getElementById('tokenArea');
+
+        statusParams.innerText = "Đang liên hệ Google...";
+        statusParams.className = "";
+        tokenArea.value = "";
+
+        try {
+            grecaptcha.ready(function() {
+                grecaptcha.execute(SITE_KEY, {action: 'login'})
+                    .then(function(token) {
+                        statusParams.innerText = "Thành công!";
+                        statusParams.className = "success";
+                        tokenArea.value = token;
+                        console.log("Token:", token);
+                    })
+                    .catch(function(err) {
+                        console.error(err);
+                        statusParams.innerText = "Lỗi: Xem Console (F12) để biết chi tiết. Khả năng cao sai Domain.";
+                        statusParams.className = "error";
+                    });
+            });
+        } catch (e) {
+            statusParams.innerText = "Lỗi: Không tải được thư viện Recaptcha. Kiểm tra mạng hoặc Site Key.";
+            statusParams.className = "error";
+        }
+    }
+</script>
+</body>
+</html>
