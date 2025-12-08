@@ -8,4 +8,5 @@ import java.util.List;
 public interface RegistrationService {
     void registerCourse(String studentCode, String classCode);
     List<ClassResponse> getOpenClasses(Long facultyId);
+    void cancelRegistration(String username, String classCode);
 }

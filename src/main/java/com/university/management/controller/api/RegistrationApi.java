@@ -26,4 +26,9 @@ public interface RegistrationApi {
     ResponseEntity<List<ClassResponse>> getOpenClasses(
             @RequestParam(required = false) Long facultyId
     );
+
+    @Operation(summary = "Hủy đăng ký lớp học phần")
+    @PostMapping("/cancel") // Dùng POST cho an toàn và tiện gửi Body
+    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
+    ResponseEntity<String> cancelRegistration(@RequestBody RegistrationRequestDto request);
 }

@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
     boolean existsByStudentAndCourseClass(Student student, CourseClass courseClass);
 
@@ -17,4 +20,6 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     boolean existsByStudentAndSemesterAndSubject(@Param("studentId") Long studentId,
                                                  @Param("semesterId") Long semesterId,
                                                  @Param("subjectId") Long subjectId);
+    List<Registration> findByStudent_IdAndCourseClass_Semester_IsActiveTrue(Long student);
+    Optional<Registration> findByStudent_User_UsernameAndCourseClass_ClassCode(String username, String classCode);
 }
