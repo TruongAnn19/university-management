@@ -7,6 +7,7 @@ import com.university.management.model.dto.response.TranscriptResponse;
 import com.university.management.service.ScoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +26,12 @@ public class ScoreController implements ScoreApi {
     @Override
     public ResponseEntity<TranscriptResponse> getStudentScores(String studentCode) {
         return ResponseEntity.ok(scoreService.getStudentTranscript(studentCode));
+    }
+
+    @Override
+    public ResponseEntity<TranscriptResponse> getMyTranscript() {
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok(scoreService.getMyTranscriptByUsername(currentUsername));
     }
 
     @Override

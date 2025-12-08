@@ -39,4 +39,8 @@ public class Subject {
 
     @Column(columnDefinition = "int default 70")
     private Integer finalPercent = 70;
+
+    @ManyToOne
+    @JoinColumn(name = "faculty_id")
+    private Faculty faculty;
 }

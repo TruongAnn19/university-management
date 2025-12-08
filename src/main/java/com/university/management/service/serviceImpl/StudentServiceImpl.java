@@ -1,9 +1,8 @@
 package com.university.management.service.serviceImpl;
 
 import com.university.management.model.dto.requestDto.StudentRequestDto;
-import com.university.management.model.entity.Role;
-import com.university.management.model.entity.Student;
-import com.university.management.model.entity.User;
+import com.university.management.model.entity.*;
+import com.university.management.repository.FacultyRepository;
 import com.university.management.repository.StudentRepository;
 import com.university.management.repository.UserRepository;
 import com.university.management.service.StudentService;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.format.DateTimeFormatter;
 
 @Service
@@ -26,6 +26,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FacultyRepository facultyRepository;
 
     @Override
     @Transactional
@@ -39,6 +40,7 @@ public class StudentServiceImpl implements StudentService {
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
+                int currentRowIndex = i;
 
                 String username = dataFormatter.formatCellValue(row.getCell(0)).trim();
                 String rawPassword = dataFormatter.formatCellValue(row.getCell(1)).trim();
@@ -46,12 +48,19 @@ public class StudentServiceImpl implements StudentService {
                 String fullName = dataFormatter.formatCellValue(row.getCell(3)).trim();
                 String className = dataFormatter.formatCellValue(row.getCell(4)).trim();
                 String dobString = dataFormatter.formatCellValue(row.getCell(5)).trim();
+                String facultyCode = dataFormatter.formatCellValue(row.getCell(6)).trim();
+                Integer enrollmentYear =  Integer.parseInt(dataFormatter.formatCellValue(row.getCell(7)).trim());
 
                 if (username.isEmpty() || studentCode.isEmpty()) continue;
-
                 if (userRepository.findByUsername(username).isPresent()) {
                     continue;
                 }
+
+                if (facultyCode.isEmpty()) {
+                    throw new RuntimeException("Dòng " + (i+1) + ": Thiếu mã khoa!");
+                }
+                Faculty faculty = facultyRepository.findByFacultyCode(facultyCode)
+                        .orElseThrow(() -> new RuntimeException("Dòng " + (currentRowIndex+1) + ": Mã khoa '" + facultyCode + "' không tồn tại."));
 
                 var user = User.builder()
                         .username(username)
@@ -72,7 +81,10 @@ public class StudentServiceImpl implements StudentService {
                         .fullName(fullName)
                         .className(className)
                         .dob(dob)
+                        .faculty(faculty)
                         .user(user)
+                        .status(StudentStatus.STUDYING)
+                        .enrollmentYear(enrollmentYear)
                         .build();
 
                 studentRepository.save(student);

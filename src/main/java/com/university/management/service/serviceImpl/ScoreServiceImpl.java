@@ -39,7 +39,7 @@ public class ScoreServiceImpl implements ScoreService {
     private final SemesterRepository semesterRepository;
 
     @Override
-    @CacheEvict(value = "student_scores", key = "#request.studentCode()")
+//    @CacheEvict(value = "student_scores", key = "#request.studentCode()")
     public ScoreDto recordScore(ScoreRequestDto request) {
         String currentUsername = "SYSTEM";
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
@@ -100,27 +100,27 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     @Transactional
-    @Cacheable(value = "student_scores", key = "#studentCode")
+//    @Cacheable(value = "student_scores", key = "#studentCode")
     public TranscriptResponse getStudentTranscript(String studentCode) {
         Student student = studentRepository.findByStudentCode(studentCode)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sinh viên"));
 
         Faculty faculty = student.getFaculty();
         List<Score> scores = scoreRepository.findByStudent_StudentCode(studentCode);
-        List<ScoreDto> scoreDtos = scores.stream().map(scoreMapper::toDto).toList();
+        List<ScoreDto> scoresDto = scores.stream().map(scoreMapper::toDto).toList();
 
         if (faculty == null) {
             return new TranscriptResponse(student.getFullName(), "N/A",
-                    student.getStatus().name(), "Chưa cập nhật thông tin Khoa", scoreDtos);
+                    student.getStatus().name(), "Chưa cập nhật thông tin Khoa", scoresDto);
         }
 
         if (student.getStatus() == StudentStatus.GRADUATED) {
             return new TranscriptResponse(student.getFullName(), faculty.getFacultyName(),
-                    "ĐÃ TỐT NGHIỆP", "Chúc mừng! Bạn đã hoàn thành chương trình đào tạo.", scoreDtos);
+                    "ĐÃ TỐT NGHIỆP", "Chúc mừng! Bạn đã hoàn thành chương trình đào tạo.", scoresDto);
         }
         if (student.getStatus() == StudentStatus.EXPELLED) {
             return new TranscriptResponse(student.getFullName(), faculty.getFacultyName(),
-                    "BUỘC THÔI HỌC", "Cảnh báo: Bạn đã bị buộc thôi học do quá thời gian đào tạo.", scoreDtos);
+                    "BUỘC THÔI HỌC", "Cảnh báo: Bạn đã bị buộc thôi học do quá thời gian đào tạo.", scoresDto);
         }
 
         int currentYear = Year.now().getValue();
@@ -158,8 +158,17 @@ public class ScoreServiceImpl implements ScoreService {
                 faculty.getFacultyName(),
                 statusStr,
                 message,
-                scoreDtos
+                scoresDto
         );
+    }
+
+    @Override
+    @Transactional
+    public TranscriptResponse getMyTranscriptByUsername(String username) {
+        Student student = studentRepository.findByUser_Username(username)
+                .orElseThrow(() -> new RuntimeException("Tài khoản này chưa liên kết với hồ sơ sinh viên nào!"));
+        String realStudentCode = student.getStudentCode();
+        return this.getStudentTranscript(realStudentCode);
     }
 
     @Override

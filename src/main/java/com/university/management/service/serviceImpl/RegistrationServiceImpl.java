@@ -1,5 +1,6 @@
 package com.university.management.service.serviceImpl;
 
+import com.university.management.model.dto.response.ClassResponse;
 import com.university.management.model.entity.*;
 import com.university.management.service.RegistrationService;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -67,5 +69,31 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .build();
 
         registrationRepository.save(registration);
+    }
+
+    @Override
+    public List<ClassResponse> getOpenClasses(Long facultyId) {
+        List<CourseClass> classes;
+
+        if (facultyId != null) {
+            classes = courseClassRepository.findClassesByFacultyOrShared(facultyId);
+        } else {
+            classes = courseClassRepository.findBySemester_IsActiveTrue();
+        }
+
+        return classes.stream().map(c -> {
+            String facultyName = (c.getSubject().getFaculty() != null)
+                    ? c.getSubject().getFaculty().getFacultyName()
+                    : "Môn Đại Cương";
+
+            return new ClassResponse(
+                    c.getClassCode(),
+                    c.getSubject().getSubjectName(),
+                    facultyName,
+                    c.getSubject().getCredits(),
+                    c.getCurrentSlot(),
+                    c.getMaxSlot()
+            );
+        }).toList();
     }
 }

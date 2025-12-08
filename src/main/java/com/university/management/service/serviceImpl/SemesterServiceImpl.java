@@ -35,8 +35,6 @@ public class SemesterServiceImpl implements SemesterService {
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
 
-                // 1. Đọc dữ liệu
-                // Cột 0: Tên Kỳ, Cột 1: Mã Kỳ, Cột 2: Ngày BĐ, Cột 3: Ngày KT, Cột 4: Active (1/0)
                 String name = dataFormatter.formatCellValue(row.getCell(0)).trim();
                 String code = dataFormatter.formatCellValue(row.getCell(1)).trim();
                 String startDateStr = dataFormatter.formatCellValue(row.getCell(2)).trim();
@@ -45,12 +43,10 @@ public class SemesterServiceImpl implements SemesterService {
 
                 if (code.isEmpty()) continue;
 
-                // 2. Check trùng (Nếu trùng mã thì bỏ qua)
                 if (semesterRepository.findBySemesterCode(code).isPresent()) {
                     continue;
                 }
 
-                // 3. Parse Ngày tháng (Giả sử Excel nhập yyyy-MM-dd)
                 LocalDate startDate = null;
                 LocalDate endDate = null;
                 try {
@@ -60,10 +56,8 @@ public class SemesterServiceImpl implements SemesterService {
                     throw new RuntimeException("Lỗi định dạng ngày tại dòng " + (i + 1) + ". Yêu cầu: yyyy-MM-dd");
                 }
 
-                // 4. Parse Active (1 = true, 0 = false)
                 boolean isActive = "1".equals(activeStr) || "true".equalsIgnoreCase(activeStr);
 
-                // 5. Nếu kỳ này Active -> Deactive các kỳ cũ đi (Logic nghiệp vụ: Chỉ 1 kỳ mở)
                 if (isActive) {
                     semesterRepository.findByIsActiveTrue().ifPresent(s -> {
                         s.setIsActive(false);

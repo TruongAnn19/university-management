@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +23,6 @@ import java.util.List;
 @RequestMapping("/api/scores")
 @Tag(name = "Score Management", description = "API quản lý điểm số sinh viên")
 public interface ScoreApi {
-    // Định nghĩa API Nhập điểm
     @Operation(summary = "Nhập điểm mới thủ công", description = "API dùng cho Giảng viên nhập điểm kết thúc học phần")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Nhập điểm thành công",
@@ -34,8 +34,6 @@ public interface ScoreApi {
     @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     ResponseEntity<ScoreDto> createScore(@Valid @RequestBody ScoreRequestDto request);
 
-
-    // Định nghĩa API Xem điểm
     @Operation(summary = "Xem bảng điểm", description = "Lấy danh sách điểm của một sinh viên theo Mã SV")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Thành công"),
@@ -44,6 +42,11 @@ public interface ScoreApi {
     @GetMapping("/{studentCode}")
     @PreAuthorize("@customSecurity.isOwnerOrTeacher(#studentCode)")
     ResponseEntity<TranscriptResponse> getStudentScores(@PathVariable("studentCode") String studentCode);
+
+    @Operation(summary = "Xem bảng điểm của chính tôi (Dựa vào Token)")
+    @GetMapping("/my-transcript")
+    @PreAuthorize("hasRole('STUDENT')")
+    ResponseEntity<TranscriptResponse> getMyTranscript();
 
     @Operation(summary = "Nhập điểm mới", description = "API dùng cho Giảng viên nhập điểm kết thúc học phần bằng file excel")
     @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

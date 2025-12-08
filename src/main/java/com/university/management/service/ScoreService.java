@@ -11,4 +11,5 @@ public interface ScoreService {
     ScoreDto recordScore(ScoreRequestDto request);
     TranscriptResponse getStudentTranscript(String studentCode);
     void importScores(MultipartFile file);
+    TranscriptResponse getMyTranscriptByUsername(String username);
 }
