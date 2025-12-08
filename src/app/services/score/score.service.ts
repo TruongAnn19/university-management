@@ -10,8 +10,8 @@ export class ScoreService {
     private http = inject(HttpClient);
     private apiUrl = `${environment.apiUrl}/scores`;
 
-    getMyTranscript(studentCode: string) {
-        return this.http.get<TranscriptResponse>(`${this.apiUrl}/${studentCode}`);
+    getMyTranscript() {
+        return this.http.get<TranscriptResponse>(`${this.apiUrl}/my-transcript`);
     }
 
     importScores(file: File) {

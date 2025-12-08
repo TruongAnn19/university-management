@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ScoreService } from '../../../services/score/score.service'; 
-import { AuthService } from '../../../services/auth/auth.service'; 
-import { TranscriptResponse } from '../../../models/score/score.model'; 
+import { ScoreService } from '../../../services/score/score.service';
+import { AuthService } from '../../../services/auth/auth.service';
+import { TranscriptResponse } from '../../../models/score/score.model';
 
 @Component({
   selector: 'app-my-scores',
@@ -20,23 +20,17 @@ export class MyScoresComponent implements OnInit {
   errorMessage = '';
 
   ngOnInit() {
-    const user = this.authService.getUserInfo();
-    if (user && user.username) {
-      this.loadTranscript(user.username);
-    }
-  }
-
-  loadTranscript(studentCode: string) {
-    this.scoreService.getMyTranscript(studentCode).subscribe({
+    this.isLoading = true
+    this.scoreService.getMyTranscript().subscribe({
       next: (data) => {
         this.transcript = data;
         this.isLoading = false;
       },
       error: (err) => {
-        console.error(err);
-        this.errorMessage = 'Không thể tải bảng điểm. Vui lòng thử lại sau.';
+        this.errorMessage = 'Lỗi tải bảng điểm';
         this.isLoading = false;
       }
     });
   }
+
 }
