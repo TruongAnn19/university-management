@@ -5,6 +5,13 @@ export interface ClassResponse {
   credits: number;
   currentSlot: number;
   maxSlot: number;
+  studyStatus: string;
+  isRegistered: boolean;
+  isMyClass: boolean;
+  semesterName: string;
+  startDate: string;
+  endDate: string;
+  timeStatus: string;
 }
 
 export interface Faculty {
@@ -14,6 +21,6 @@ export interface Faculty {
 }
 
 export interface RegistrationRequest {
-  studentCode: string;
+  // studentCode: string;
   classCode: string;
 }

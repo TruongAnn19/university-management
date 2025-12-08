@@ -8,6 +8,7 @@ import { ImportTeachersComponent } from './pages/admin/import-teachers/import-te
 import { ImportScoresComponent } from './pages/teacher/import-scores/import-scores.component';
 import { ImportSubjectsComponent } from './pages/admin/import-subjects/import-subjects.component';
 import { ImportSemestersComponent } from './pages/admin/import-semesters/import-semesters.component';
+import { CourseRegistrationComponent } from './pages/student/course-registration/course-registration.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -24,6 +25,7 @@ export const routes: Routes = [
             { path: 'import-scores', component: ImportScoresComponent },
             { path: 'import-subjects', component: ImportSubjectsComponent },
             { path: 'import-semesters', component: ImportSemestersComponent },
+            { path: 'register-course', component: CourseRegistrationComponent },
         ]
     },
     { path: '**', redirectTo: 'login' }

@@ -1,0 +1,131 @@
+<div class="reg-container">
+  <div class="header-box">
+    <h2>📝 Đăng ký Tín chỉ</h2>
+    <p class="sub-text">Học kỳ hiện tại đang mở đăng ký. Vui lòng chọn lớp cẩn thận.</p>
+  </div>
+
+  <div class="filter-card">
+    <div class="filter-group">
+      <label for="facultySelect">Lọc theo Khoa/Viện:</label>
+      <select id="facultySelect" [(ngModel)]="selectedFacultyId" (change)="onFacultyChange()" class="form-select"
+        [disabled]="isLoading">
+
+        <option [ngValue]="null">-- Tất cả / Môn dùng chung --</option>
+
+        <option *ngFor="let f of faculties" [value]="f.id">
+          {{ f.facultyName }}
+        </option>
+      </select>
+    </div>
+    <div class="loading-spinner" *ngIf="isLoading"></div>
+  </div>
+
+  <div *ngIf="message" class="alert" [ngClass]="isError ? 'alert-danger' : 'alert-success'">
+    {{ message }}
+  </div>
+
+  <div class="table-responsive">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Mã Lớp</th>
+          <th>Tên Môn Học</th>
+          <th>Khoa Quản Lý</th>
+          <th>Thời Gian Học</th>
+          <th class="text-center">Số TC</th>
+          <th class="text-center">Sĩ Số</th>
+          <th class="text-center">Trạng Thái</th>
+          <th class="text-center">Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of classes" [class.row-registered]="c.isRegistered">
+          <td class="class-code">{{ c.classCode }}</td>
+          <td class="subject-name">{{ c.subjectName }}</td>
+          <td>
+            <span class="badge faculty-badge">{{ c.facultyName || 'Đại Cương' }}</span>
+          </td>
+          <td>
+            <div class="time-box">
+              <small class="semester-name">{{ c.semesterName }}</small>
+              <div class="date-range">
+                {{ c.startDate | date:'dd/MM/yyyy' }} - {{ c.endDate | date:'dd/MM/yyyy' }}
+              </div>
+            </div>
+          </td>
+          <td class="text-center bold">{{ c.credits }}</td>
+
+          <td class="text-center">
+            <span [class.text-danger]="!c.isRegistered && c.currentSlot >= c.maxSlot">
+              {{ c.currentSlot }} / {{ c.maxSlot }}
+            </span>
+          </td>
+
+          <td class="text-center">
+
+            <span *ngIf="c.isMyClass" class="badge status-learning">
+              📚 Đang học
+            </span>
+
+            <span *ngIf="!c.isMyClass && c.timeStatus === 'EXPIRED'" class="badge status-closed">
+              Hết hạn ĐK
+            </span>
+
+            <span *ngIf="!c.isMyClass && c.timeStatus === 'WAITING'" class="badge status-waiting">
+              Sắp mở
+            </span>
+
+            <span *ngIf="!c.isMyClass && c.timeStatus === 'OPEN' && c.currentSlot >= c.maxSlot"
+              class="badge status-full">
+              Lớp đầy
+            </span>
+
+            <span *ngIf="!c.isMyClass && c.isRegistered" class="badge status-retake">
+              Trùng môn
+            </span>
+
+            <span *ngIf="!c.isRegistered && c.studyStatus === 'PASSED'" class="badge status-passed">Đã qua</span>
+            <span *ngIf="!c.isRegistered && c.studyStatus !== 'PASSED' && c.currentSlot >= c.maxSlot"
+              class="badge status-full">Hết chỗ</span>
+            <span *ngIf="!c.isRegistered && !c.isMyClass && c.currentSlot < c.maxSlot && c.timeStatus === 'OPEN'"
+              class="badge status-open">Cho
+              phép ĐK</span>
+
+          </td>
+
+          <td class="text-center">
+
+            <button *ngIf="c.isMyClass" class="btn-cancel" (click)="onCancel(c.classCode)" [disabled]="isLoading">
+              Hủy
+            </button>
+
+            <button *ngIf="!c.isMyClass && c.isRegistered" class="btn-disabled" disabled
+              title="Bạn đã đăng ký môn này ở lớp khác">
+              Đã ĐK
+            </button>
+
+            <button *ngIf="!c.isRegistered && c.studyStatus !== 'PASSED' && c.timeStatus === 'OPEN'"
+              class="btn-register" (click)="onRegister(c.classCode)"
+              [disabled]="c.currentSlot >= c.maxSlot || isLoading"> {{ c.currentSlot >= c.maxSlot ? 'Hết chỗ' : 'Đăng
+              ký' }}
+            </button>
+
+            <button *ngIf="!c.isRegistered && c.studyStatus !== 'PASSED' && c.timeStatus === 'WAITING'"
+              class="btn-disabled" disabled>
+              Đăng ký
+            </button>
+
+            <button *ngIf="!c.isRegistered && c.studyStatus !== 'PASSED' && c.timeStatus === 'EXPIRED'"
+              class="btn-disabled" disabled>
+              Đăng ký
+            </button>
+
+          </td>
+        </tr>
+        <tr *ngIf="classes.length === 0 && !isLoading">
+          <td colspan="7" class="empty-row">Không tìm thấy lớp học phần nào.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

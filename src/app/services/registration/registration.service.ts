@@ -26,4 +26,10 @@ export class RegistrationService {
   getAllFaculties() {
     return this.http.get<Faculty[]>(`${this.apiUrl}/faculties`);
   }
+
+  cancelRegistration(request: RegistrationRequest) {
+    return this.http.post(`${this.apiUrl}/registration/cancel`, request, {
+      responseType: 'text'
+    });
+  }
 }

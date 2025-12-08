@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment'; 
+import { environment } from '../../../environments/environment';
 
 export interface StudentDTO {
   id: number;
@@ -16,7 +16,6 @@ export class StudentService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/students`;
 
-  // Hàm upload file
   importStudents(file: File) {
     const formData = new FormData();
     formData.append('file', file);
