@@ -44,14 +44,25 @@ export class ImportScoresComponent {
       },
       error: (err) => {
         console.error(err);
-        // Ưu tiên hiển thị message lỗi từ Backend (VD: "Không tìm thấy sinh viên...")
-        if (err.error) {
-             this.message = typeof err.error === 'string' ? err.error : JSON.stringify(err.error);
-        } else {
-             this.message = 'Có lỗi xảy ra khi import.';
-        }
         this.isError = true;
         this.isLoading = false;
+        let rawMessage = '';
+
+        if (err.error && typeof err.error === 'object' && err.error.message) {
+          rawMessage = err.error.message;
+        }
+        else if (typeof err.error === 'string') {
+          try {
+            const parsedError = JSON.parse(err.error);
+            rawMessage = parsedError.message || err.error;
+          } catch (e) {
+            rawMessage = err.error;
+          }
+        }
+        else {
+          this.message = 'Có lỗi xảy ra khi import (Lỗi không xác định).';
+        }
+        this.message = rawMessage.replace('Lỗi dữ liệu tại dòng đang xử lý: ', '');
       }
     });
   }
