@@ -11,4 +11,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     Optional<Teacher> findByTeacherCode(String teacherCode);
     List<Teacher> findByFaculty_FacultyCode(String facultyCode);
     Optional<Teacher> findByUser_Username(String username);
+
+    Optional<Object> findByUserId(Long id);
 }

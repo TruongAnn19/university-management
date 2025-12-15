@@ -22,4 +22,8 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
                                                  @Param("subjectId") Long subjectId);
     List<Registration> findByStudent_IdAndCourseClass_Semester_IsActiveTrue(Long student);
     Optional<Registration> findByStudent_User_UsernameAndCourseClass_ClassCode(String username, String classCode);
+    List<Registration> findByStudent_StudentCodeAndCourseClass_Subject_SubjectCode(
+            String studentCode,
+            String subjectCode
+    );
 }

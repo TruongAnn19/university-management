@@ -15,4 +15,6 @@ public interface StudentRepository extends JpaRepository<Student,Long> {
             "FROM Student s JOIN s.faculty f " +
             "GROUP BY f.facultyName")
     List<StatPair> countStudentsByFaculty();
+
+    Optional<Object> findByUserId(Long id);
 }

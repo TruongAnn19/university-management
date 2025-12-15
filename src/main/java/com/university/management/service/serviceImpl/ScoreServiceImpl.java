@@ -5,10 +5,7 @@ import com.university.management.model.dto.ScoreDto;
 import com.university.management.model.dto.requestDto.ScoreRequestDto;
 import com.university.management.model.dto.response.TranscriptResponse;
 import com.university.management.model.entity.*;
-import com.university.management.repository.ScoreRepository;
-import com.university.management.repository.SemesterRepository;
-import com.university.management.repository.StudentRepository;
-import com.university.management.repository.SubjectRepository;
+import com.university.management.repository.*;
 import com.university.management.service.AuditService;
 import com.university.management.service.ScoreService;
 import jakarta.transaction.Transactional;
@@ -37,6 +34,7 @@ public class ScoreServiceImpl implements ScoreService {
     private final ScoreMapper scoreMapper;
     private final AuditService auditService;
     private final SemesterRepository semesterRepository;
+    private final RegistrationRepository registrationRepository;
 
     @Override
 //    @CacheEvict(value = "student_scores", key = "#request.studentCode()")
@@ -202,6 +200,20 @@ public class ScoreServiceImpl implements ScoreService {
 
                 if (exists) {
                     continue;
+                }
+
+                List<Registration> registrations = registrationRepository
+                        .findByStudent_StudentCodeAndCourseClass_Subject_SubjectCode(studentCode, subjectCode);
+
+                if (registrations.isEmpty()) {
+                    throw new RuntimeException(studentCode + "CHƯA TỪNG ĐĂNG KÝ môn " + subjectCode + ". Không thể nhập điểm!");
+                }
+
+                boolean isStudying = registrations.stream()
+                        .anyMatch(r -> Boolean.TRUE.equals(r.getCourseClass().getSemester().getIsActive()));
+
+                if (isStudying) {
+                    throw new RuntimeException("Sinh viên đang trong thời gian học môn " + subjectCode + ". Vui lòng đợi kết thúc học kỳ để nhập điểm.");
                 }
 
                 double processScore = 0.0;
