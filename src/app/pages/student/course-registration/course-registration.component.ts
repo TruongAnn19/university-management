@@ -116,4 +116,15 @@ export class CourseRegistrationComponent implements OnInit {
       }
     });
   }
+
+  getCourseStatus(c: any): { text: string, class: string } | null {
+    if (c.isMyClass) return { text: '📚 Đang học', class: 'status-learning' };
+    if (!c.isRegistered && c.studyStatus === 'PASSED') return { text: 'Đã qua', class: 'status-passed' };
+    if (c.timeStatus === 'EXPIRED') return { text: 'Hết hạn ĐK', class: 'status-closed' };
+    if (c.timeStatus === 'WAITING') return { text: 'Sắp mở', class: 'status-waiting' };
+    if (c.currentSlot >= c.maxSlot) return { text: 'Lớp đầy', class: 'status-full' };
+    if (c.isRegistered) return { text: 'Trùng môn', class: 'status-retake' };
+    if (c.timeStatus === 'OPEN') return { text: 'Cho phép ĐK', class: 'status-open' };
+    return null;
+  }
 }

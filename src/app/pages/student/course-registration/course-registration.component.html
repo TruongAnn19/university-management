@@ -62,35 +62,11 @@
           </td>
 
           <td class="text-center">
-
-            <span *ngIf="c.isMyClass" class="badge status-learning">
-              📚 Đang học
-            </span>
-
-            <span *ngIf="!c.isMyClass && c.timeStatus === 'EXPIRED'" class="badge status-closed">
-              Hết hạn ĐK
-            </span>
-
-            <span *ngIf="!c.isMyClass && c.timeStatus === 'WAITING'" class="badge status-waiting">
-              Sắp mở
-            </span>
-
-            <span *ngIf="!c.isMyClass && c.timeStatus === 'OPEN' && c.currentSlot >= c.maxSlot"
-              class="badge status-full">
-              Lớp đầy
-            </span>
-
-            <span *ngIf="!c.isMyClass && c.isRegistered" class="badge status-retake">
-              Trùng môn
-            </span>
-
-            <span *ngIf="!c.isRegistered && c.studyStatus === 'PASSED'" class="badge status-passed">Đã qua</span>
-            <span *ngIf="!c.isRegistered && c.studyStatus !== 'PASSED' && c.currentSlot >= c.maxSlot"
-              class="badge status-full">Hết chỗ</span>
-            <span *ngIf="!c.isRegistered && !c.isMyClass && c.currentSlot < c.maxSlot && c.timeStatus === 'OPEN'"
-              class="badge status-open">Cho
-              phép ĐK</span>
-
+            <ng-container *ngIf="getCourseStatus(c) as status">
+              <span class="badge" [ngClass]="status.class">
+                {{ status.text }}
+              </span>
+            </ng-container>
           </td>
 
           <td class="text-center">

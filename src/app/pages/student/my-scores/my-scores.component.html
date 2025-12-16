@@ -5,7 +5,7 @@
   <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 
   <div *ngIf="transcript" class="content">
-    
+
     <div class="info-card" [ngClass]="{
       'graduated': transcript.status === 'ĐÃ TỐT NGHIỆP',
       'expelled': transcript.status === 'BUỘC THÔI HỌC'
@@ -16,6 +16,7 @@
       <p class="message">🔔 {{ transcript.message }}</p>
     </div>
 
+    @if (transcript && transcript.scores && transcript.scores.length > 0) {
     <table class="score-table">
       <thead>
         <tr>
@@ -29,7 +30,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let s of transcript.scores; let i = index">
+        @for (s of transcript.scores; track s.subjectName; let i = $index) {
+        <tr>
           <td class="center">{{ i + 1 }}</td>
           <td class="subject-name">{{ s.subjectName }}</td>
           <td class="center">{{ s.credits }}</td>
@@ -37,11 +39,18 @@
           <td class="center">{{ s.finalScore }}</td>
           <td class="center bold">{{ s.totalScore | number:'1.1-1' }}</td>
           <td class="center">
-            <span *ngIf="s.totalScore >= 4.0" class="pass">Đạt</span>
-            <span *ngIf="s.totalScore < 4.0" class="fail">Học lại</span>
+            @if (s.totalScore >= 4.0) { <span class="pass">Đạt</span> }
+            @else { <span class="fail">Học lại</span> }
           </td>
         </tr>
+        }
       </tbody>
     </table>
+    } @else {
+    <div class="no-data">
+      <div class="empty-state-icon">📝</div>
+      <p>Hiện tại bạn chưa có điểm môn học nào.</p>
+    </div>
+    }
   </div>
 </div>
