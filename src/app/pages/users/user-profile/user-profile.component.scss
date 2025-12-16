@@ -1,0 +1,240 @@
+// --- Variables ---
+$color-student: #4361ee; // Xanh dương
+$color-teacher: #2ec4b6; // Xanh ngọc
+$color-admin: #ef476f; // Đỏ hồng
+$color-gray: #6c757d;
+$bg-color: #f8f9fa;
+$card-bg: #ffffff;
+
+// --- Mixins ---
+@mixin role-theme($color) {
+    .card-header {
+        background: linear-gradient(135deg, $color, darken($color, 15%));
+    }
+
+    .role-badge {
+        color: $color;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    .highlight-text {
+        color: $color;
+    }
+}
+
+// --- Main Styles ---
+.profile-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $bg-color;
+    padding: 20px;
+}
+
+.loading-state {
+    text-align: center;
+    color: $color-gray;
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #ddd;
+        border-top-color: $color-student;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 10px;
+    }
+}
+
+.profile-card {
+    width: 100%;
+    max-width: 400px;
+    background: $card-bg;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: translateY(-5px);
+    }
+
+    // --- Theme Variations (Dựa trên class binding [ngClass]) ---
+    &.student-theme {
+        @include role-theme($color-student);
+    }
+
+    &.teacher-theme {
+        @include role-theme($color-teacher);
+    }
+
+    &.admin-theme {
+        @include role-theme($color-admin);
+    }
+
+    // --- Header ---
+    .card-header {
+        padding: 40px 20px;
+        text-align: center;
+        color: white;
+        position: relative;
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .user-name {
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .role-badge {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    }
+
+    // --- Body ---
+    .card-body {
+        padding: 25px;
+
+        .info-row {
+            display: flex;
+            gap: 15px;
+
+            .info-group {
+                flex: 1;
+            }
+        }
+
+        .info-group {
+            margin-bottom: 15px;
+
+            label {
+                display: block;
+                font-size: 0.85rem;
+                color: #888;
+                margin-bottom: 4px;
+            }
+
+            .value {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #333;
+            }
+        }
+
+        .divider {
+            height: 1px;
+            background: #eee;
+            margin: 20px 0;
+        }
+
+        // --- GPA Box Styling ---
+        .gpa-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #eee;
+
+            .gpa-label {
+                font-weight: 500;
+                color: #555;
+            }
+
+            .gpa-value {
+                font-size: 1.5rem;
+                font-weight: 800;
+            }
+
+            // Dynamic colors for GPA
+            &.good {
+                .gpa-value {
+                    color: #2ec4b6;
+                }
+
+                border-left: 5px solid #2ec4b6;
+            }
+
+            &.avg {
+                .gpa-value {
+                    color: #ff9f1c;
+                }
+
+                border-left: 5px solid #ff9f1c;
+            }
+
+            &.bad {
+                .gpa-value {
+                    color: #e71d36;
+                }
+
+                border-left: 5px solid #e71d36;
+            }
+
+            &.none {
+                .gpa-value {
+                    color: #ccc;
+                }
+            }
+        }
+    }
+
+    // --- Footer ---
+    .card-footer {
+        padding: 20px;
+        border-top: 1px solid #f0f0f0;
+        text-align: center;
+
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s;
+
+            &:hover {
+                background: #f8f9fa;
+                color: #e71d36;
+                border-color: #e71d36;
+            }
+        }
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

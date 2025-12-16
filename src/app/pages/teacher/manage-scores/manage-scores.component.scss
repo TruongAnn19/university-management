@@ -1,0 +1,68 @@
+// Màu chủ đạo
+$primary: #4361ee;
+$success: #198754;
+
+// 1. Tút lại thanh tìm kiếm
+.search-box {
+  background: #fff;
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+  
+  &:focus-within {
+    box-shadow: 0 10px 30px rgba(67, 97, 238, 0.15) !important;
+    border-color: $primary;
+    transform: translateY(-2px);
+  }
+
+  input {
+    background: transparent;
+  }
+}
+
+// 2. Avatar sinh viên (Giả lập)
+.student-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid #fff;
+  background: linear-gradient(135deg, #e0f2ff 0%, #d1e7dd 100%);
+  color: $primary;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+// 3. Hiệu ứng bảng
+.table-hover tbody tr:hover {
+  background-color: rgba($primary, 0.02);
+  cursor: default;
+}
+
+// 4. Modal (Popup nhập điểm)
+.modal-content {
+  border: none;
+  border-radius: 16px; // Bo cong modal
+  overflow: hidden;
+}
+
+.modal-header {
+  background-color: $success;
+  color: white;
+  
+  .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%); // Làm nút X màu trắng
+  }
+}
+
+// Làm đẹp ô nhập liệu (Floating label)
+.form-floating {
+  > .form-control {
+    border-radius: 8px;
+    &:focus {
+      border-color: $success;
+      box-shadow: 0 0 0 0.25rem rgba($success, 0.25);
+    }
+  }
+}

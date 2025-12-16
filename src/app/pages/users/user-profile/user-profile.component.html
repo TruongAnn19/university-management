@@ -1,0 +1,91 @@
+<div class="profile-container">
+
+  @if (isLoading) {
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Đang tải dữ liệu...</p>
+  </div>
+  }
+
+  @if (!isLoading && profile) {
+  <div class="profile-card" [ngClass]="getRoleClass(profile.role)">
+
+    <div class="card-header">
+      <div class="header-content">
+        <div class="avatar">
+          {{ getInitial(profile.details?.fullName || profile.username) }}
+        </div>
+
+        <h2 class="user-name">
+          {{ profile.details?.fullName || profile.username }}
+        </h2>
+
+        <div class="role-badge">{{ profile.role }}</div>
+      </div>
+      <div class="wave"></div>
+    </div>
+
+    <div class="card-body">
+
+      <div class="info-group">
+        <label>Tên tài khoản: </label>
+        <span class="value">{{ profile.username }}</span>
+      </div>
+
+      @switch (profile.role) {
+
+      @case ('STUDENT') {
+      @if (profile.details; as d) {
+      <div class="divider"></div>
+
+      <div class="info-row">
+        <div class="info-group">
+          <label>Mã sinh viên</label>
+          <span class="value">{{ d.studentCode }}</span>
+        </div>
+        <div class="info-group">
+          <label>Lớp</label>
+          <span class="value">{{ d.className }}</span>
+        </div>
+      </div>
+
+      <div class="info-group">
+        <label>Ngày sinh</label>
+        <span class="value">{{ d.dob | date:'dd/MM/yyyy' }}</span>
+      </div>
+
+      <div class="gpa-box" [ngClass]="getGpaColorClass(d.gpa)">
+        <span class="gpa-label">Điểm Trung Bình (GPA)</span>
+        <span class="gpa-value">
+          @if (d.gpa !== null) {
+          {{ d.gpa | number:'1.1-2' }}
+          } @else {
+          <span style="font-size: 0.9rem; color: #999;">Chưa cập nhật</span>
+          }
+        </span>
+      </div>
+      }
+      }
+
+      @case ('TEACHER') {
+      @if (profile.details; as d) {
+      <div class="divider"></div>
+      <div class="info-group">
+        <label>Họ và tên</label>
+        <span class="value">{{ d.fullName }}</span>
+      </div>
+      <div class="info-group">
+        <label>Mã giảng viên</label>
+        <span class="value">{{ d.teacherCode }}</span>
+      </div>
+      <div class="info-group">
+        <label>Khoa / Viện</label>
+        <span class="value highlight-text">{{ d.faculty }}</span>
+      </div>
+      }
+      }
+      }
+    </div>
+  </div>
+  }
+</div>

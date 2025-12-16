@@ -6,6 +6,13 @@ export interface Score {
   totalScore: number; 
 }
 
+export interface CreateScoreRequest {
+  studentCode: string;
+  subjectCode: string;
+  processScore: number;
+  finalScore: number;
+}
+
 export interface TranscriptResponse {
   studentName: string;
   facultyName: string;

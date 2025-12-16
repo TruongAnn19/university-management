@@ -1,0 +1,202 @@
+<div class="container py-5">
+
+  <div class="text-center mb-5">
+    <h2 class="fw-bold text-primary mb-3">Quản Lý Điểm Sinh Viên</h2>
+    <p class="text-muted">Tra cứu bảng điểm và nhập điểm bổ sung cho sinh viên</p>
+  </div>
+
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-8">
+      <div class="search-box card shadow-sm p-2 border-0 rounded-pill">
+        <div class="d-flex align-items-center">
+          <div class="input-icon ps-3 text-muted">
+            <i class="bi bi-search fs-5"></i>
+          </div>
+          <input type="text" class="form-control form-control-lg border-0 shadow-none ps-3 rounded-pill"
+            placeholder="Nhập mã sinh viên (VD: B24CN001)..." [(ngModel)]="searchStudentCode"
+            (keyup.enter)="onSearch()">
+          <button class="btn btn-primary rounded-pill px-4 py-2 m-1 fw-bold" (click)="onSearch()"
+            [disabled]="isLoading">
+            @if(isLoading) { <span class="spinner-border spinner-border-sm"></span> }
+            @else { Tìm kiếm }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (successMessage) {
+  <div class="alert alert-success d-flex align-items-center shadow-sm rounded-3 mb-4 animate__animated animate__fadeIn">
+    <i class="bi bi-check-circle-fill fs-4 me-3"></i>
+    <div>{{ successMessage }}</div>
+  </div>
+  }
+
+  @if (errorMessage) {
+  <div class="alert alert-danger d-flex align-items-center shadow-sm rounded-3 mb-4 animate__animated animate__fadeIn">
+    <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+    <div>{{ errorMessage }}</div>
+  </div>
+  }
+
+  @if (transcript) {
+  <div class="result-container animate__animated animate__fadeInUp">
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden">
+      <div class="card-body p-4">
+        <div class="row align-items-center">
+          <div class="col-md-8 d-flex align-items-center gap-4">
+            <div class="student-avatar bg-light text-primary fw-bold shadow-sm">
+              {{ transcript.studentName.charAt(0) }}
+            </div>
+            <div>
+              <h3 class="fw-bold mb-1">{{ transcript.studentName }}</h3>
+              <div class="d-flex gap-3 text-muted small">
+                <span><i class="bi bi-building me-1"></i> {{ transcript.facultyName }}</span>
+                <span class="vr"></span>
+                <span class="fw-medium text-success"><i class="bi bi-check-circle me-1"></i> {{ transcript.status
+                  }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <button class="btn btn-success btn-lg shadow-sm rounded-pill px-4" data-bs-toggle="modal"
+              data-bs-target="#addScoreModal" (click)="openAddScoreModal()">
+              <i class="bi bi-plus-lg me-2"></i> Nhập điểm mới
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+      <div class="card-header bg-white py-3 px-4 border-bottom">
+        <h5 class="mb-0 fw-bold text-gray-800">📚 Bảng điểm chi tiết</h5>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-middle mb-0 table-hover">
+          <thead class="bg-light">
+            <tr class="text-uppercase small text-muted">
+              <th class="ps-4 py-3">Môn học</th>
+              <th class="text-center">Số TC</th>
+              <th class="text-center">Quá trình</th>
+              <th class="text-center">Thi</th>
+              <th class="text-center">Tổng kết</th>
+              <th class="text-center">Kết quả</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (score of transcript.scores; track score.subjectName) {
+            <tr>
+              <td class="ps-4 fw-medium text-dark">{{ score.subjectName }}</td>
+              <td class="text-center text-muted">{{ score.credits }}</td>
+              <td class="text-center">{{ score.processScore }}</td>
+              <td class="text-center">{{ score.finalScore }}</td>
+              <td class="text-center">
+                <span class="badge rounded-pill px-3 py-2" [class.bg-danger-subtle]="score.totalScore < 4"
+                  [class.text-danger]="score.totalScore < 4" [class.bg-success-subtle]="score.totalScore >= 8.5"
+                  [class.text-success]="score.totalScore >= 8.5"
+                  [class.bg-light]="score.totalScore >= 4 && score.totalScore < 8.5"
+                  [class.text-dark]="score.totalScore >= 4 && score.totalScore < 8.5">
+                  {{ score.totalScore | number:'1.1-1'}}
+                </span>
+              </td>
+              <td class="text-center">
+                <span *ngIf="score.totalScore >= 4.0" class="pass">Đạt</span>
+                <span *ngIf="score.totalScore < 4.0" class="fail">Học lại</span>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="5" class="text-center py-5 text-muted">Chưa có dữ liệu điểm.</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  }
+</div>
+
+<div class="modal fade" id="addScoreModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+
+      <div class="modal-header bg-success text-white border-bottom-0 py-3">
+        <h5 class="modal-title fw-bold">
+          <i class="bi bi-pencil-square me-2"></i> Nhập điểm môn học
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body p-4 pt-4">
+        <form [formGroup]="scoreForm">
+
+          <div class="d-flex align-items-center bg-light p-3 rounded-3 mb-4 border">
+            <div
+              class="avatar-small bg-success text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
+              style="width: 40px; height: 40px;">
+              <i class="bi bi-person-fill"></i>
+            </div>
+            <div>
+              <small class="text-muted d-block">Sinh viên</small>
+              <span class="fw-bold text-dark">{{ searchStudentCode | uppercase }}</span>
+              <input type="hidden" formControlName="studentCode">
+            </div>
+          </div>
+
+          <div class="form-floating mb-4">
+            <input type="text" class="form-control" id="sjCode" placeholder="Mã môn" formControlName="subjectCode"
+              [class.is-invalid]="scoreForm.get('subjectCode')?.invalid && scoreForm.get('subjectCode')?.touched">
+            <label for="sjCode">Mã Môn Học (VD: INT1337)</label>
+            @if (scoreForm.get('subjectCode')?.invalid && scoreForm.get('subjectCode')?.touched) {
+            <div class="invalid-feedback ps-2">Vui lòng nhập mã môn học.</div>
+            }
+          </div>
+
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="form-floating">
+                <input type="number" class="form-control text-center fw-bold" id="pScore" placeholder="QT"
+                  formControlName="processScore"
+                  [class.is-invalid]="scoreForm.get('processScore')?.invalid && scoreForm.get('processScore')?.touched">
+                <label for="pScore">Điểm Quá Trình</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-floating">
+                <input type="number" class="form-control text-center fw-bold" id="fScore" placeholder="Thi"
+                  formControlName="finalScore"
+                  [class.is-invalid]="scoreForm.get('finalScore')?.invalid && scoreForm.get('finalScore')?.touched">
+                <label for="fScore">Điểm Thi</label>
+              </div>
+            </div>
+          </div>
+
+          @if (scoreForm.invalid && scoreForm.touched) {
+          <div class="alert alert-light border-danger text-danger d-flex align-items-center mt-3 py-2 small"
+            role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            <div>Vui lòng kiểm tra lại thông tin nhập liệu (Điểm từ 0-10).</div>
+          </div>
+          }
+        </form>
+      </div>
+
+      <div class="modal-footer border-top-0 px-4 pb-4">
+        <button type="button" class="d-none" #closeModalBtn data-bs-dismiss="modal"></button>
+
+        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy bỏ</button>
+        <button type="button" class="btn btn-success rounded-pill px-5 fw-bold" (click)="onSaveScore()"
+          [disabled]="isSaving">
+          @if(isSaving) { <span class="spinner-border spinner-border-sm me-2"></span> Đang lưu... }
+          @else { Lưu Điểm }
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

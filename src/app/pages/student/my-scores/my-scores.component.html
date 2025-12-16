@@ -19,18 +19,18 @@
     <table class="score-table">
       <thead>
         <tr>
-          <th>STT</th>
+          <th class="center">STT</th>
           <th>Môn học</th>
-          <th>Số TC</th>
-          <th>Quá trình</th>
-          <th>Điểm thi</th>
-          <th>Tổng kết</th>
-          <th>Kết quả</th>
+          <th class="center">Số TC</th>
+          <th class="center">Quá trình</th>
+          <th class="center">Điểm thi</th>
+          <th class="center">Tổng kết</th>
+          <th class="center">Kết quả</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let s of transcript.scores; let i = index">
-          <td>{{ i + 1 }}</td>
+          <td class="center">{{ i + 1 }}</td>
           <td class="subject-name">{{ s.subjectName }}</td>
           <td class="center">{{ s.credits }}</td>
           <td class="center">{{ s.processScore }}</td>
