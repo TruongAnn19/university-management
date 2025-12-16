@@ -6,4 +6,5 @@ import org.springframework.web.multipart.MultipartFile;
 public interface StudentService {
     void importStudents(MultipartFile file);
     void createStudent(StudentRequestDto request);
+    void updateStudentGpa(String studentCode);
 }

@@ -3,6 +3,7 @@ package com.university.management.service.serviceImpl;
 import com.university.management.model.dto.requestDto.StudentRequestDto;
 import com.university.management.model.entity.*;
 import com.university.management.repository.FacultyRepository;
+import com.university.management.repository.ScoreRepository;
 import com.university.management.repository.StudentRepository;
 import com.university.management.repository.UserRepository;
 import com.university.management.service.StudentService;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class StudentServiceImpl implements StudentService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final FacultyRepository facultyRepository;
+    private final ScoreRepository scoreRepository;
 
     @Override
     @Transactional
@@ -119,6 +122,53 @@ public class StudentServiceImpl implements StudentService {
                 .dob(request.dob())
                 .user(user)
                 .build();
+
+        studentRepository.save(student);
+    }
+
+    private double convertToGpa4(double score10) {
+        if (score10 >= 8.5) return 4.0;
+        if (score10 >= 7.0) return 3.0;
+        if (score10 >= 5.5) return 2.0;
+        if (score10 >= 4.0) return 1.0;
+        return 0.0;
+    }
+
+    @Transactional
+    public void updateStudentGpa(String studentCode) {
+        Student student = studentRepository.findByStudentCode(studentCode)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        List<Score> scores = scoreRepository.findByStudent_StudentCode(studentCode);
+
+        if (scores.isEmpty()) {
+            student.setGpa(0.0);
+            studentRepository.save(student);
+            return;
+        }
+
+        double totalScore4 = 0;
+        int totalCredits = 0;
+
+        for (Score s : scores) {
+            // Chỉ tính những môn đã có điểm tổng kết (qua môn hay trượt đều tính vào CPA/GPA tích lũy)
+            if (s.getTotalScore() != null) {
+                int credits = s.getSubject().getCredits();
+                double gpa4 = convertToGpa4(s.getTotalScore());
+
+                totalScore4 += gpa4 * credits;
+                totalCredits += credits;
+            }
+        }
+
+        if (totalCredits > 0) {
+            double finalGpa = totalScore4 / totalCredits;
+            finalGpa = Math.round(finalGpa * 100.0) / 100.0;
+
+            student.setGpa(finalGpa);
+        } else {
+            student.setGpa(0.0);
+        }
 
         studentRepository.save(student);
     }

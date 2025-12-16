@@ -53,4 +53,7 @@ public class Student {
 
     @Column(name = "is_deleted", columnDefinition = "boolean default false")
     private boolean isDeleted = false;
+
+    @Column(name = "gpa")
+    private Double gpa;
 }

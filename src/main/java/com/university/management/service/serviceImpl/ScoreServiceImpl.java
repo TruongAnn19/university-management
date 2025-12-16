@@ -8,6 +8,7 @@ import com.university.management.model.entity.*;
 import com.university.management.repository.*;
 import com.university.management.service.AuditService;
 import com.university.management.service.ScoreService;
+import com.university.management.service.StudentService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -35,6 +36,7 @@ public class ScoreServiceImpl implements ScoreService {
     private final AuditService auditService;
     private final SemesterRepository semesterRepository;
     private final RegistrationRepository registrationRepository;
+    private final StudentService studentService;
 
     @Override
 //    @CacheEvict(value = "student_scores", key = "#request.studentCode()")
@@ -81,6 +83,7 @@ public class ScoreServiceImpl implements ScoreService {
         }
 
         Score savedScore = scoreRepository.save(scoreToSave);
+        studentService.updateStudentGpa(request.getStudentCode());
         String newValueStr = String.format("Process: %.1f, Final: %.1f",
                 savedScore.getProcessScore(), savedScore.getFinalScore());
 
@@ -91,6 +94,7 @@ public class ScoreServiceImpl implements ScoreService {
                 oldValueStr,
                 newValueStr,
                 currentUsername
+
         );
 
         return scoreMapper.toDto(savedScore);
@@ -243,5 +247,6 @@ public class ScoreServiceImpl implements ScoreService {
             throw new RuntimeException("Lỗi dữ liệu tại dòng đang xử lý: " + e.getMessage());
         }
     }
+
 
 }
