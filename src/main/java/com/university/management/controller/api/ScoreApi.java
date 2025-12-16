@@ -30,7 +30,7 @@ public interface ScoreApi {
             @ApiResponse(responseCode = "400", description = "Dữ liệu không hợp lệ (Validation)",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @PostMapping
+    @PostMapping("/createScore")
     @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     ResponseEntity<ScoreDto> createScore(@Valid @RequestBody ScoreRequestDto request);
 

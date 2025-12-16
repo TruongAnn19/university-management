@@ -14,5 +14,7 @@ public interface ProfileMapper {
     @Mapping(target = "details", ignore = true)
     UserProfileResponse toResponse(User user);
     StudentDetailsDTO toStudentDetails(Student student);
-    TeacherDetailsDTO toLecturerDetails(Teacher teacher);
+
+    @Mapping(source = "faculty.facultyName", target = "faculty")
+    TeacherDetailsDTO toTeacherDetails(Teacher teacher);
 }

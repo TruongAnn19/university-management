@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping("/api/v1/profiles")
+@RequestMapping("/api/profiles")
 @Tag(name = "Profile Controller", description = "APIs for user profiles")
 public interface UserProfileApi {
-
     @GetMapping("/me")
     @Operation(summary = "Get current user profile")
     ResponseEntity<UserProfileResponse> getMyProfile();
