@@ -1,0 +1,51 @@
+/* Giới hạn chiều cao và thanh cuộn cho dropdown */
+.dropdown-menu {
+  width: 350px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Style chung cho từng item */
+.notification-item {
+  white-space: normal; /* Cho phép xuống dòng */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-left: 3px solid transparent; /* Viền trái mặc định ẩn */
+
+  /* --- TRẠNG THÁI CHƯA ĐỌC --- */
+  &.unread-bg {
+    background-color: #e8f0fe; /* Màu xanh dương rất nhạt (kiểu Facebook/Google) */
+    border-left: 3px solid #0d6efd; /* Viền trái màu xanh đậm tạo điểm nhấn */
+
+    /* Tiêu đề tin chưa đọc sẽ ĐẬM */
+    .notification-title {
+      font-weight: 700 !important; 
+      color: #0d6efd;
+    }
+
+    /* Nội dung tin chưa đọc màu đen rõ hơn */
+    .notification-content {
+      color: #333 !important;
+      font-weight: 500;
+    }
+  }
+
+  /* --- TRẠNG THÁI ĐÃ ĐỌC --- */
+  &:not(.unread-bg) {
+    background-color: #ffffff;
+    
+    /* Tiêu đề tin đã đọc sẽ NHẠT và MỎNG */
+    .notification-title {
+      font-weight: 600;
+      color: #555;
+    }
+    
+    .notification-content {
+      color: #6c757d !important; 
+    }
+  }
+
+  &:hover {
+    background-color: #f1f3f4;
+  }
+}

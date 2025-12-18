@@ -19,7 +19,6 @@ import { AuthService } from '../../../services/auth/auth.service';
       <ng-container *ngIf="isStudent">
         <li><a routerLink="/my-scores" routerLinkActive="active">📊 Kết quả học tập</a></li>
         <li><a routerLink="/register-course" routerLinkActive="active">📝 Đăng ký tín chỉ</a></li>
-        <li><a routerLink="/my-appeals" routerLinkActive="active">⚖️ Phúc khảo</a></li>
       </ng-container>
 
       <ng-container *ngIf="isAdminOrTeacher">

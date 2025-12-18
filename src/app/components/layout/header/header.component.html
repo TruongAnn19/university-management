@@ -1,0 +1,58 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light" *ngIf="isStudent">
+  <div class="container-fluid">
+
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link position-relative" href="#" id="notiDropdown" role="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <i class="bi bi-bell-fill fs-5"></i> <span *ngIf="unreadCount > 0"
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ unreadCount }}
+          </span>
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notiDropdown"
+          style="width: 350px; max-height: 500px; overflow-y: auto;">
+
+          <li class="dropdown-header d-flex justify-content-between align-items-center">
+            <span class="fw-bold">Thông báo</span>
+            <button class="btn btn-sm btn-link text-decoration-none" (click)="fetchNotifications()">Làm mới</button>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+
+          <li *ngIf="notifications.length === 0" class="text-center p-3 text-muted">
+            Hiện chưa có thông báo nào.
+          </li>
+
+          <li *ngFor="let item of notifications">
+            <a class="dropdown-item p-3 border-bottom notification-item" [class.unread-bg]="!item.isRead"
+              (click)="onNotificationClick(item)">
+
+              <div class="d-flex justify-content-between mb-1">
+                <span class="notification-title" style="font-size: 0.95rem;">
+                  {{ item.title }}
+                </span>
+
+                <small class="text-muted" style="font-size: 0.75rem;">
+                  {{ item.createdAt | date:'dd/MM HH:mm' }}
+                </small>
+              </div>
+
+              <p class="mb-0 text-wrap small notification-content">
+                {{ item.message }}
+              </p>
+
+              <div *ngIf="!item.isRead" class="text-end mt-2">
+                <small class="text-primary fw-bold" style="font-size: 0.7rem;">Mới</small>
+                <span class="badge bg-primary rounded-circle p-1 ms-1" style="width: 8px; height: 8px;"> </span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+    </ul>
+  </div>
+</nav>

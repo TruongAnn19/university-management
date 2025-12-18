@@ -1,11 +1,11 @@
-import { Injectable, inject, PLATFORM_ID } from '@angular/core'; // Thêm PLATFORM_ID
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, AuthResponse } from '../../models/auth/auth.model';
 import { tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
-import { isPlatformBrowser } from '@angular/common'; // Thêm isPlatformBrowser
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'

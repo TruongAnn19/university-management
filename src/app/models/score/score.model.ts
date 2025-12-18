@@ -4,6 +4,7 @@ export interface Score {
   processScore: number;
   finalScore: number;
   totalScore: number; 
+  updatedAt: Date;
 }
 
 export interface CreateScoreRequest {

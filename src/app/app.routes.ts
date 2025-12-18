@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MainLayoutComponent } from './components/layout/main-layout/main-layout.component';
+import { authGuard } from '../app/core/auth.guard';
+import { guestGuard } from './core/guest.guard';
 
 // Student Pages
 import { MyScoresComponent } from './pages/student/my-scores/my-scores.component';
@@ -17,16 +19,17 @@ import { ImportSemestersComponent } from './pages/admin/import-semesters/import-
 
 // Shared Pages
 import { UserProfileComponent } from './pages/users/user-profile/user-profile.component';
-// import { authGuard } from './guards/auth.guard'; // Bỏ comment nếu bạn đã tạo Guard
+//Phúc khảo
+import { ManageAppealsComponent } from './pages/teacher/manage-appeals/manage-appeals.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: 'login', component: LoginComponent, title: 'Đăng nhập hệ thống' },
+    { path: 'login', component: LoginComponent, title: 'Đăng nhập hệ thống', canActivate: [guestGuard] },
 
     {
         path: '',
-        component: MainLayoutComponent, // Layout chứa Header/Sidebar
-        // canActivate: [authGuard], // Nên bật Guard ở đây để bảo vệ toàn bộ trang con
+        component: MainLayoutComponent,
+        canActivate: [authGuard], 
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', component: DashboardComponent, title: 'Trang chủ' },
@@ -38,6 +41,7 @@ export const routes: Routes = [
             // --- Admin/Teacher Routes ---
             // Nhập điểm thủ công
             { path: 'manage-scores', component: ManageScoresComponent, title: 'Quản lý điểm (Thủ công)' },
+            { path: 'appeals', component: ManageAppealsComponent, title: 'Duyệt đơn phúc khảo' },
 
             //Các trang Import Excel
             { path: 'import-students', component: ImportStudentsComponent, title: 'Import Sinh viên' },

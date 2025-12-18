@@ -14,6 +14,7 @@
       <p>Khoa: <strong>{{ transcript.facultyName }}</strong></p>
       <p>Trạng thái: <strong>{{ transcript.status }}</strong></p>
       <p class="message">🔔 {{ transcript.message }}</p>
+      <p>Lưu ý: Click <i class="bi bi-flag-fill text-warning"></i> để phúc khảo điểm</p>
     </div>
 
     @if (transcript && transcript.scores && transcript.scores.length > 0) {
@@ -21,27 +22,36 @@
       <thead>
         <tr>
           <th class="center">STT</th>
-          <th>Môn học</th>
+          <th class="center">Môn học</th>
           <th class="center">Số TC</th>
           <th class="center">Quá trình</th>
           <th class="center">Điểm thi</th>
           <th class="center">Tổng kết</th>
           <th class="center">Kết quả</th>
+          <th class="center">Ngày cập nhật</th>
         </tr>
       </thead>
       <tbody>
         @for (s of transcript.scores; track s.subjectName; let i = $index) {
         <tr>
           <td class="center">{{ i + 1 }}</td>
-          <td class="subject-name">{{ s.subjectName }}</td>
+          <td class="subject-name center">{{ s.subjectName }}</td>
           <td class="center">{{ s.credits }}</td>
           <td class="center">{{ s.processScore }}</td>
           <td class="center">{{ s.finalScore }}</td>
-          <td class="center bold">{{ s.totalScore | number:'1.1-1' }}</td>
+          <td class="center bold">
+            {{ s.totalScore | number:'1.1-1' }}
+            <button *ngIf="s.totalScore !== null" class="btn btn-sm btn-link text-warning p-0 ms-2"
+              title="Gửi phúc khảo" (click)="openAppealModal(s)">
+              <i class="bi bi-flag-fill"></i>
+            </button>
+          </td>
+
           <td class="center">
             @if (s.totalScore >= 4.0) { <span class="pass">Đạt</span> }
             @else { <span class="fail">Học lại</span> }
           </td>
+          <td class="center">{{s.updatedAt | date:'dd/MM/yyyy HH:mm'}}</td>
         </tr>
         }
       </tbody>
@@ -52,5 +62,33 @@
       <p>Hiện tại bạn chưa có điểm môn học nào.</p>
     </div>
     }
+
+    <div class="modal fade" id="appealModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-warning">
+            <h5 class="modal-title fw-bold">🚩 Yêu cầu phúc khảo</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" *ngIf="selectedScoreForAppeal">
+            <p><strong>Môn học:</strong> {{ selectedScoreForAppeal.subjectName }}</p>
+            <p><strong>Điểm hiện tại:</strong> {{ selectedScoreForAppeal.totalScore | number:'1.1-1'}}</p>
+
+            <div class="mb-3">
+              <label class="form-label">Lý do phúc khảo <span class="text-danger">*</span></label>
+              <textarea class="form-control" rows="4" [(ngModel)]="appealReason"
+                placeholder="Vui lòng trình bày rõ lý do (VD: Em làm đúng câu 3 nhưng chưa được tính điểm...)"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <button type="button" class="btn btn-warning fw-bold" (click)="submitAppeal()"
+              [disabled]="!appealReason || appealReason.trim().length < 10">
+              Gửi đơn
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
