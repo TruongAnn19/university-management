@@ -7,6 +7,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ScoreMapper {
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "student.studentCode", target = "studentCode")
     @Mapping(source = "student.fullName", target = "studentName")
     @Mapping(source = "subject.subjectName", target = "subjectName")

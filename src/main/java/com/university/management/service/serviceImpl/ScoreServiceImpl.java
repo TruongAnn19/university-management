@@ -25,10 +25,13 @@ import java.io.IOException;
 import java.time.Year;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
 public class ScoreServiceImpl implements ScoreService {
+    private final Logger logger = Logger.getLogger(ScoreServiceImpl.class.getName());
+
     private final ScoreRepository scoreRepository;
     private final StudentRepository studentRepository;
     private final SubjectRepository subjectRepository;

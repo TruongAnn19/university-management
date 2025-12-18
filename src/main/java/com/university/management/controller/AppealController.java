@@ -3,6 +3,7 @@ package com.university.management.controller;
 import com.university.management.controller.api.AppealApi;
 import com.university.management.model.dto.requestDto.AppealRequest;
 import com.university.management.model.dto.requestDto.AppealReviewRequest;
+import com.university.management.model.dto.response.AppealResponse;
 import com.university.management.model.entity.GradeAppeal;
 import com.university.management.repository.StudentRepository;
 import com.university.management.service.GradeAppealService;
@@ -35,7 +36,7 @@ public class AppealController implements AppealApi {
     }
 
     @Override
-    public ResponseEntity<List<GradeAppeal>> getPendingAppeals() {
+    public ResponseEntity<List<AppealResponse>> getPendingAppeals() {
         return ResponseEntity.ok(appealService.getPendingAppeals());
     }
 

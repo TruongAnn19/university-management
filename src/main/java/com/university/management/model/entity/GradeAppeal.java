@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "grade_appeals")
+@Table(name = "grade_appeals", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"student_id", "score_id"}) })
 public class GradeAppeal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

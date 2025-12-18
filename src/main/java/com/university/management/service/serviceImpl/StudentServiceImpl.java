@@ -151,7 +151,6 @@ public class StudentServiceImpl implements StudentService {
         int totalCredits = 0;
 
         for (Score s : scores) {
-            // Chỉ tính những môn đã có điểm tổng kết (qua môn hay trượt đều tính vào CPA/GPA tích lũy)
             if (s.getTotalScore() != null) {
                 int credits = s.getSubject().getCredits();
                 double gpa4 = convertToGpa4(s.getTotalScore());

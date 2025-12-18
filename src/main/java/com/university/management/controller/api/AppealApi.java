@@ -2,6 +2,7 @@ package com.university.management.controller.api;
 
 import com.university.management.model.dto.requestDto.AppealRequest;
 import com.university.management.model.dto.requestDto.AppealReviewRequest;
+import com.university.management.model.dto.response.AppealResponse;
 import com.university.management.model.entity.GradeAppeal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +24,7 @@ public interface AppealApi {
 
     @Operation(summary = "Tìm đơn phúc khảo theo Mã Sinh Viên (Dành cho GV)")
     @GetMapping("/student/{studentCode}")
-    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')") // Chỉ GV/Admin được soi lịch sử của SV
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     ResponseEntity<List<GradeAppeal>> getAppealsByStudent(@PathVariable String studentCode);
 
     @Operation(summary = "Giáo viên duyệt đơn phúc khảo")
@@ -34,5 +35,5 @@ public interface AppealApi {
     @Operation(summary = "Xem danh sách đơn chờ duyệt (Dành cho GV)")
     @GetMapping("/pending")
     @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
-    ResponseEntity<List<GradeAppeal>> getPendingAppeals();
+    ResponseEntity<List<AppealResponse>> getPendingAppeals();
 }

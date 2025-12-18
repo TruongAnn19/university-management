@@ -9,4 +9,5 @@ import java.util.List;
 public interface GradeAppealRepository extends JpaRepository<GradeAppeal, Long> {
     List<GradeAppeal> findByStudent_StudentCode(String studentCode);
     List<GradeAppeal> findByStatus(AppealStatus status);
+    List<GradeAppeal> findByStudent_StudentCodeAndScore_Id(String studentCode, Long scoreId);
 }

@@ -7,7 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.Where;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -17,6 +22,7 @@ import org.hibernate.annotations.Where;
 @Table(name = "scores")
 @SQLDelete(sql = "UPDATE scores SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
+@EntityListeners(AuditingEntityListener.class)
 public class Score {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,10 +65,18 @@ public class Score {
                 fPercent = subject.getFinalPercent() / 100.0;
             }
         }
-        this.totalScore = (processScore * pPercent) + (finalScore * fPercent);
+        double total = (processScore * pPercent) + (finalScore * fPercent);
+        this.totalScore = BigDecimal
+                .valueOf(total)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 
     @ManyToOne
     @JoinColumn(name = "semester_id")
     private Semester semester;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }
