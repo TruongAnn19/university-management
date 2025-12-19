@@ -11,6 +11,7 @@ import com.university.management.service.AuthenticationService;
 import com.university.management.service.CaptchaService;
 import com.university.management.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,8 +27,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final CaptchaService captchaService;
 
+    @Value("application.security.adminKey")
+    private String systemAdminKey;
+
     @Override
     public AuthResponse register(RegisterRequest request) {
+
+        if (userRepository.findByUsername(request.username()).isPresent()) {
+            throw new RuntimeException("Username đã tồn tại: " + request.username());
+        }
+        if (request.role() == Role.ADMIN) {
+            if (!request.adminKey().equals(systemAdminKey)) {
+                throw new RuntimeException("Sai mã khóa bí mật. Không thể tạo Admin!");
+            }
+        }
         if (request.role() == Role.STUDENT || request.role() == Role.TEACHER) {
             throw new RuntimeException("Không thể tự đăng ký Sinh viên/Giảng viên. Vui lòng liên hệ Admin.");
         }
@@ -35,7 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = User.builder()
                 .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
-                .role(Role.ADMIN)
+                .role(request.role())
                 .build();
 
         userRepository.save(user);

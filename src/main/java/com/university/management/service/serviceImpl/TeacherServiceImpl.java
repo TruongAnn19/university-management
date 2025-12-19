@@ -1,8 +1,11 @@
 package com.university.management.service.serviceImpl;
 
+import com.university.management.mapper.StudentMapper;
+import com.university.management.model.dto.StudentDto;
 import com.university.management.model.dto.requestDto.TeacherRequestDto;
 import com.university.management.model.entity.*;
 import com.university.management.repository.FacultyRepository;
+import com.university.management.repository.StudentRepository;
 import com.university.management.repository.TeacherRepository;
 import com.university.management.repository.UserRepository;
 import com.university.management.service.TeacherService;
@@ -16,8 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,8 @@ public class TeacherServiceImpl implements TeacherService {
     private final UserRepository userRepository;
     private final FacultyRepository facultyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final StudentRepository studentRepository;
+    private final StudentMapper studentMapper;
 
     @Override
     @Transactional
@@ -110,5 +114,10 @@ public class TeacherServiceImpl implements TeacherService {
                 .build();
 
         teacherRepository.save(teacher);
+    }
+    @Override
+    public List<StudentDto> getListStudent(String facultyCode) {
+        List<Student> students = studentRepository.findByFaculty_FacultyCode(facultyCode);
+        return studentMapper.toDtoList(students);
     }
 }

@@ -44,3 +44,7 @@ google:
     secret: "6LedfR4sAAAAAHqBp2DKyB-PYzr0uf7wq9ZLemEe"
     verify-url: "https://www.google.com/recaptcha/api/siteverify"
     threshold: 0.5
+
+application:
+  security:
+    adminKey: "admin"

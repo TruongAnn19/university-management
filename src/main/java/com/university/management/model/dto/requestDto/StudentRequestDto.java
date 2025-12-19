@@ -1,5 +1,6 @@
 package com.university.management.model.dto.requestDto;
 
+import com.university.management.model.entity.Faculty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -22,6 +23,12 @@ public record StudentRequestDto(
         String className,
 
         @NotNull(message = "Ngày sinh không được để trống")
-        LocalDate dob
+        LocalDate dob,
+
+        @NotNull(message = "Năm nhập học không được để trống")
+        Integer enrollment_year,
+
+        @NotNull(message = "Mã khoa không được để trống")
+        String facultyCode
 ) {
 }

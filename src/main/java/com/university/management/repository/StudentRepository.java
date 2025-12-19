@@ -2,6 +2,7 @@ package com.university.management.repository;
 
 import com.university.management.model.dto.StatPair;
 import com.university.management.model.entity.Student;
+import com.university.management.model.entity.StudentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,4 +18,7 @@ public interface StudentRepository extends JpaRepository<Student,Long> {
     List<StatPair> countStudentsByFaculty();
 
     Optional<Student> findByUserId(Long id);
+    List<Student> findByFaculty_FacultyCode(String facultyCode);
+
+    List<Student> findAllByStatus(StudentStatus status);
 }

@@ -108,6 +108,9 @@ public class StudentServiceImpl implements StudentService {
             throw new RuntimeException("Mã sinh viên đã tồn tại: " + request.studentCode());
         }
 
+        Faculty faculty = facultyRepository.findByFacultyCode(request.facultyCode())
+                .orElseThrow(() -> new RuntimeException("Khoa không tồn tại"));
+
         var user = User.builder()
                 .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
@@ -120,6 +123,9 @@ public class StudentServiceImpl implements StudentService {
                 .fullName(request.fullName())
                 .className(request.className())
                 .dob(request.dob())
+                .enrollmentYear(request.enrollment_year())
+                .faculty(faculty)
+                .status(StudentStatus.STUDYING)
                 .user(user)
                 .build();
 
@@ -170,5 +176,23 @@ public class StudentServiceImpl implements StudentService {
         }
 
         studentRepository.save(student);
+    }
+
+    private StudentStatus determineStatus(Student student) {
+        if (student.getGpa() == null || student.getGpa() == 0) {
+            return StudentStatus.STUDYING;
+        }
+
+        // 2. Kiểm tra dựa trên GPA
+        double gpa = student.getGpa();
+        if (gpa < 1.0) return StudentStatus.EXPELLED;
+        if (gpa < 2.0) return StudentStatus.DROPPED;
+
+        int currentYear = LocalDate.now().getYear();
+        if (student.getEnrollmentYear() != null && currentYear > student.getEnrollmentYear()) {
+            return gpa >= 2.0 ? StudentStatus.GRADUATED : StudentStatus.STUDYING;
+        }
+
+        return StudentStatus.STUDYING;
     }
 }

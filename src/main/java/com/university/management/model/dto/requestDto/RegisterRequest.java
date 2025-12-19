@@ -7,11 +7,10 @@ import jakarta.validation.constraints.NotNull;
 public record RegisterRequest(
         @NotBlank(message = "Username không được để trống")
         String username,
-
         @NotBlank(message = "Password không được để trống")
         String password,
-
         @NotNull(message = "Role không được để trống")
-        Role role
+        Role role,
+        String adminKey
 ) {
 }
