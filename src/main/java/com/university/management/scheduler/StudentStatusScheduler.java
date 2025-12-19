@@ -17,17 +17,8 @@ public class StudentStatusScheduler {
     private final StudentRepository studentRepository;
 
     @Scheduled(cron = "0 0 0 1 9 ?")
-    @Transactional
     public void updateExpelledStudents() {
-        List<Student> activeStudents = studentRepository.findAllByStatus(StudentStatus.STUDYING);
         int currentYear = LocalDate.now().getYear();
-
-        for (Student student : activeStudents) {
-            int maxYearAllowed = student.getEnrollmentYear() + student.getFaculty().getDuration() + 3;
-            if (currentYear > maxYearAllowed) {
-                student.setStatus(StudentStatus.EXPELLED);
-            }
-        }
-        studentRepository.saveAll(activeStudents);
+        studentRepository.updateExpelledStatus(currentYear);
     }
 }
