@@ -14,3 +14,10 @@ export interface UserInfo {
   roles: string[];
   exp: number;
 }
+
+export interface Register {
+  username: string;
+  password: string;
+  role: "ADMIN" | "STUDENT" | "TEACHER";
+  adminKey: String;
+}

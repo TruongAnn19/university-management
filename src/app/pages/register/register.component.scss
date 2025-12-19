@@ -1,0 +1,28 @@
+.register-container {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+// .card {
+//   transition: transform 0.3s ease;
+//   &:hover {
+//     transform: translateY(-5px);
+//   }
+// }
+
+.form-control, .form-select, .input-group-text {
+  border-color: #dee2e6;
+  &:focus {
+    box-shadow: none;
+    border-color: #0d6efd;
+    background-color: #fff !important;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

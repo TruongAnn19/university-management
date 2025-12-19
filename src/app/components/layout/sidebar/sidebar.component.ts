@@ -24,6 +24,7 @@ import { AuthService } from '../../../services/auth/auth.service';
       <ng-container *ngIf="isAdminOrTeacher">
         <li><a routerLink="/manage-scores" routerLinkActive="active">📝 Quản Lý Điểm Sinh Viên</a></li>
         <li><a routerLink="/appeals" routerLinkActive="active">⚖️ Duyệt phúc khảo</a></li>
+        <li><a href="/list-student" routerLinkActive="active">Danh sách sinh viên</a></li>
   
         <li class="divider" style="border-top: 1px solid #eee; margin: 5px 15px;"></li> <li><a routerLink="/import-scores" routerLinkActive="active">📊 Import Điểm (Excel)</a></li>
         <li><a routerLink="/import-students" routerLinkActive="active">📥 Import Sinh viên</a></li>

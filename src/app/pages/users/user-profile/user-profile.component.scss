@@ -54,11 +54,11 @@ $card-bg: #ffffff;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    transition: transform 0.3s ease;
+    // transition: transform 0.3s ease;
 
-    &:hover {
-        transform: translateY(-5px);
-    }
+    // &:hover {
+    //     transform: translateY(-5px);
+    // }
 
     // --- Theme Variations (Dựa trên class binding [ngClass]) ---
     &.student-theme {

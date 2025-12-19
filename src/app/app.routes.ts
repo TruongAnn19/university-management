@@ -21,10 +21,13 @@ import { ImportSemestersComponent } from './pages/admin/import-semesters/import-
 import { UserProfileComponent } from './pages/users/user-profile/user-profile.component';
 //Phúc khảo
 import { ManageAppealsComponent } from './pages/teacher/manage-appeals/manage-appeals.component';
+import { RegisterComponent } from './pages/register/register.component';
+import { ListStudentComponent } from './pages/teacher/list-student/list-student.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent, title: 'Đăng nhập hệ thống', canActivate: [guestGuard] },
+    { path: 'register', component: RegisterComponent, title: 'Đăng ký admin'},
 
     {
         path: '',
@@ -42,6 +45,7 @@ export const routes: Routes = [
             // Nhập điểm thủ công
             { path: 'manage-scores', component: ManageScoresComponent, title: 'Quản lý điểm (Thủ công)' },
             { path: 'appeals', component: ManageAppealsComponent, title: 'Duyệt đơn phúc khảo' },
+            { path: 'list-student', component: ListStudentComponent, title: 'Danh sách sinh viên'},
 
             //Các trang Import Excel
             { path: 'import-students', component: ImportStudentsComponent, title: 'Import Sinh viên' },

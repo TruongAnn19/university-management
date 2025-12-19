@@ -1,0 +1,29 @@
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table {
+  thead {
+    th {
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+.input-group-text {
+  border-right: none;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #dee2e6;
+}
+
+.badge {
+  font-weight: 500;
+  padding: 0.5em 0.8em;
+}

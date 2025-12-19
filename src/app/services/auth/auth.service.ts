@@ -1,7 +1,7 @@
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, AuthResponse } from '../../models/auth/auth.model';
+import { LoginRequest, AuthResponse, Register } from '../../models/auth/auth.model';
 import { tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
@@ -20,6 +20,10 @@ export class AuthService {
   private tokenKey = 'access_token';
 
   constructor() {}
+
+  register(credentials: Register) {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, credentials)
+  }
 
   login(credentials: LoginRequest) {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(

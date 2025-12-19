@@ -1,0 +1,83 @@
+<div class="register-container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="card shadow-lg border-0 rounded-4" style="width: 450px;">
+    <div class="card-body p-5">
+
+      <div class="text-center mb-4">
+        <i class="bi bi-shield-lock-fill text-primary display-4"></i>
+        <h3 class="fw-bold mt-2 text-primary">Tạo Quản Trị Viên</h3>
+        <p class="text-muted small">Hệ thống quản lý đại học</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+        <div class="mb-3">
+          <label class="form-label fw-bold small">Tên đăng nhập</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0"><i class="bi bi-person"></i></span>
+            <input type="text" class="form-control border-start-0 ps-0 bg-light" placeholder="Nhập username"
+              formControlName="username"
+              [class.is-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+          </div>
+          @if (registerForm.get('username')?.hasError('required') && registerForm.get('username')?.touched) {
+          <small class="text-danger">Vui lòng nhập tên đăng nhập</small>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold small">Mật khẩu</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0"><i class="bi bi-key"></i></span>
+            <input type="password" class="form-control border-start-0 ps-0 bg-light" placeholder="Nhập mật khẩu"
+              formControlName="password"
+              [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+          </div>
+          @if (registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched) {
+          <small class="text-danger">Mật khẩu phải từ 6 ký tự trở lên</small>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold small">Vai trò</label>
+          <select class="form-select bg-light" formControlName="role">
+            <option value="ADMIN">Quản trị viên (Admin)</option>
+            <option value="STUDENT">Sinh viên</option>
+            <option value="TEACHER">Giảng viên</option>
+          </select>
+          <!-- @if (registerForm.get('role')?.value !== 'ADMIN') {
+            <div class="alert alert-warning mt-2 py-2 small">
+              <i class="bi bi-info-circle me-1"></i> SV/GV không thể tự đăng ký online.
+            </div>
+          } -->
+        </div>
+
+        @if (showAdminKey) {
+        <div class="mb-4 animate-fade-in">
+          <label class="form-label fw-bold small text-danger">Mã khóa bí mật (Admin Key)</label>
+          <div class="input-group">
+            <span class="input-group-text bg-danger bg-opacity-10 text-danger border-end-0"><i
+                class="bi bi-incognito"></i></span>
+            <input type="password" class="form-control border-start-0 ps-0 bg-danger bg-opacity-10"
+              placeholder="Nhập mã bí mật hệ thống" formControlName="adminKey"
+              [class.is-invalid]="registerForm.get('adminKey')?.invalid && registerForm.get('adminKey')?.touched">
+          </div>
+          @if (registerForm.get('adminKey')?.invalid && registerForm.get('adminKey')?.touched) {
+          <small class="text-danger">Bắt buộc nhập mã khóa để tạo Admin</small>
+          }
+        </div>
+        }
+        <!-- [disabled]="registerForm.invalid || isProcessing" -->
+        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm mb-3">
+          <span *ngIf="isProcessing" class="spinner-border spinner-border-sm me-2"></span>
+          Đăng Ký
+        </button>
+
+        <div class="text-center">
+          <small class="text-muted">Đã có tài khoản?
+            <a routerLink="/login" class="text-decoration-none fw-bold">Đăng nhập ngay</a>
+          </small>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

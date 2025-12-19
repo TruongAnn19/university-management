@@ -1,7 +1,7 @@
 <div class="login-container">
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
     <h2>Đăng nhập Hệ thống</h2>
-    
+
     <div class="form-group">
       <label>Username</label>
       <input type="text" formControlName="username" class="form-control">
@@ -18,7 +18,9 @@
       <span *ngIf="isLoading">Đang xử lý...</span>
       <span *ngIf="!isLoading">Đăng nhập</span>
     </button>
-    
+
+    <p style="font-size: 13px;"><a href="/register">Bạn chưa có tài khoản?</a></p>
+
     <p class="captcha-terms">
       This site is protected by reCAPTCHA and the Google
       <a href="https://policies.google.com/privacy">Privacy Policy</a> and
