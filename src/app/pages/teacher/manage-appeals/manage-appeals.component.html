@@ -2,7 +2,7 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold text-primary">📩 Quản Lý Phúc Khảo</h2>
     <button class="btn btn-outline-primary" (click)="loadPendingAppeals()">
-      <i class="bi bi-arrow-clockwise"></i> Làm mới
+      <i class="bi bi-arrow-clockwise me-1"></i> Làm mới
     </button>
   </div>
 
@@ -29,7 +29,7 @@
             <td class="fw-bold text-primary text-center">{{ appeal.subjectName }}</td>
             <td class="fw-bold text-center">{{ appeal.oldScore }}</td>
             <td class="text-center">
-              <div class="text-truncate" style="max-width: 250px;" [title]="appeal.reason">
+              <div class="text-truncate mx-auto" style="max-width: 250px;" [title]="appeal.reason">
                 {{ appeal.reason }}
               </div>
             </td>
@@ -59,68 +59,56 @@
     <div class="modal-content border-0 shadow-lg">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">Xử lý đơn phúc khảo #{{ selectedAppeal?.id }}</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" id="closeModalBtn"></button>
       </div>
 
-      <div class="modal-body p-4" *ngIf="selectedAppeal">
-        <div class="alert alert-light border mb-3">
-          <p class="mb-1"><strong>Sinh viên:</strong> {{ selectedAppeal.studentName }} ({{ selectedAppeal.studentCode
-            }})</p>
-          <p class="mb-1"><strong>Môn:</strong> {{ selectedAppeal.subjectName }}</p>
-          <p class="mb-0"><strong>Lý do SV:</strong> "{{ selectedAppeal.reason }}"</p>
-        </div>
-
+      @if (selectedAppeal) {
         <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+          <div class="modal-body p-4">
+            <div class="alert alert-light border mb-3">
+              <p class="mb-1"><strong>Sinh viên:</strong> {{ selectedAppeal.studentName }} ({{ selectedAppeal.studentCode }})</p>
+              <p class="mb-1"><strong>Môn:</strong> {{ selectedAppeal.subjectName }}</p>
+              <p class="mb-0 text-muted italic"><strong>Lý do SV:</strong> "{{ selectedAppeal.reason }}"</p>
+            </div>
 
-          <div class="mb-3">
-            <label class="form-label">Quyết định</label>
-            <select class="form-select" formControlName="status">
-              <option value="APPROVED">Chấp nhận (Sửa điểm)</option>
-              <option value="REJECTED">Từ chối (Giữ nguyên)</option>
-            </select>
-          </div>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Quyết định</label>
+              <select class="form-select" formControlName="status">
+                <option value="APPROVED">Chấp nhận (Sửa điểm)</option>
+                <option value="REJECTED">Từ chối (Giữ nguyên)</option>
+              </select>
+            </div>
 
-          <div class="mb-3" *ngIf="reviewForm.get('status')?.value === 'APPROVED'">
-            <label class="form-label">Điểm số mới <span class="text-danger">*</span></label>
-            <input type="number" class="form-control" formControlName="newScore"
-              [class.is-invalid]="reviewForm.get('newScore')?.invalid && reviewForm.get('newScore')?.touched">
+            @if (reviewForm.get('status')?.value === 'APPROVED') {
+              <div class="mb-3">
+                <label class="form-label fw-bold">Điểm số mới <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" formControlName="newScore"
+                  [class.is-invalid]="reviewForm.get('newScore')?.invalid && reviewForm.get('newScore')?.touched">
+                <div class="invalid-feedback">Điểm phải từ 0 đến 10.</div>
+              </div>
+            }
 
-            <div class="invalid-feedback">
-              <span *ngIf="reviewForm.get('newScore')?.hasError('required')">Vui lòng nhập điểm mới.</span>
-              <span
-                *ngIf="reviewForm.get('newScore')?.hasError('min') || reviewForm.get('newScore')?.hasError('max')">Điểm
-                phải từ 0 đến 10.</span>
+            <div class="mb-3">
+              <label class="form-label fw-bold">Phản hồi cho sinh viên <span class="text-danger">*</span></label>
+              <textarea class="form-control" rows="3" formControlName="teacherResponse"
+                placeholder="Nhập nội dung phản hồi..."
+                [class.is-invalid]="reviewForm.get('teacherResponse')?.invalid && reviewForm.get('teacherResponse')?.touched"></textarea>
+              <div class="invalid-feedback">Vui lòng nhập phản hồi (ít nhất 10 ký tự).</div>
             </div>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">Phản hồi cho sinh viên <span class="text-danger">*</span></label>
-            <textarea class="form-control" rows="3" formControlName="teacherResponse"
-              [class.is-invalid]="reviewForm.get('teacherResponse')?.invalid && reviewForm.get('teacherResponse')?.touched"></textarea>
-
-            <div class="invalid-feedback">
-              Vui lòng nhập lý do/phản hồi (ít nhất 10 ký tự).
-            </div>
-          </div>
-
-          <div class="modal-footer">
+          <div class="modal-footer bg-light">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button type="submit" class="btn btn-primary" [disabled]="isProcessing">
-              <span *ngIf="isProcessing" class="spinner-border spinner-border-sm me-1"></span>
-              Xác nhận
+            <button type="submit" class="btn btn-primary px-4" [disabled]="reviewForm.invalid || isProcessing">
+              @if(isProcessing) { 
+                <span class="spinner-border spinner-border-sm me-1"></span> 
+              } @else { 
+                Xác nhận xử lý 
+              }
             </button>
           </div>
         </form>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-        <button type="button" class="btn btn-primary" (click)="submitReview()"
-          [disabled]="reviewForm.invalid || isProcessing">
-          @if(isProcessing) { <span class="spinner-border spinner-border-sm"></span> }
-          @else { Xác nhận }
-        </button>
-      </div>
+      }
     </div>
   </div>
 </div>
