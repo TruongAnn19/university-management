@@ -1,4 +1,4 @@
-package com.university.management.service.serviceImpl;
+package com.university.management.service .serviceImpl;
 
 import com.university.management.mapper.AppealMapper;
 import com.university.management.model.dto.requestDto.AppealRequest;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,18 +43,10 @@ public class GradeAppealServiceImpl implements GradeAppealService {
             throw new RuntimeException("Bạn không thể phúc khảo điểm của người khác!");
         }
 
-        List<GradeAppeal> existingAppealOpt = appealRepository.findByStudent_StudentCodeAndScore_Id(studentCode, request.scoreId());
+        boolean exists = appealRepository.existsByStudent_StudentCodeAndScore_Id(studentCode, request.scoreId());
 
-        if (existingAppealOpt.isEmpty()) {
-            GradeAppeal existingAppeal = existingAppealOpt.get(0);
-
-            if (existingAppeal.getStatus() == AppealStatus.PENDING) {
-                throw new RuntimeException("Bạn đã gửi đơn phúc khảo cho môn này rồi. Vui lòng chờ kết quả!");
-            }
-            else {
-                String result = (existingAppeal.getStatus() == AppealStatus.APPROVED) ? "được CHẤP NHẬN" : "bị TỪ CHỐI";
-                throw new RuntimeException("Bạn đã phúc khảo môn này và đơn đã " + result + ". Không thể gửi lại!");
-            }
+        if (exists) {
+            throw new RuntimeException("Mỗi đầu điểm chỉ được phép phúc khảo 1 lần duy nhất!");
         }
 
         LocalDateTime scoreTime = score.getUpdatedAt();

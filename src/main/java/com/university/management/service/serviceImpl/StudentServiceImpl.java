@@ -177,22 +177,4 @@ public class StudentServiceImpl implements StudentService {
 
         studentRepository.save(student);
     }
-
-    private StudentStatus determineStatus(Student student) {
-        if (student.getGpa() == null || student.getGpa() == 0) {
-            return StudentStatus.STUDYING;
-        }
-
-        // 2. Kiểm tra dựa trên GPA
-        double gpa = student.getGpa();
-        if (gpa < 1.0) return StudentStatus.EXPELLED;
-        if (gpa < 2.0) return StudentStatus.DROPPED;
-
-        int currentYear = LocalDate.now().getYear();
-        if (student.getEnrollmentYear() != null && currentYear > student.getEnrollmentYear()) {
-            return gpa >= 2.0 ? StudentStatus.GRADUATED : StudentStatus.STUDYING;
-        }
-
-        return StudentStatus.STUDYING;
-    }
 }

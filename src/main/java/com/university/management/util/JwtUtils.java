@@ -1,6 +1,5 @@
 package com.university.management.util;
 
-import com.university.management.model.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -25,7 +24,6 @@ public class JwtUtils {
     }
 
     public String generateToken(String username, String role) {
-        User user = new User();
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role",role)

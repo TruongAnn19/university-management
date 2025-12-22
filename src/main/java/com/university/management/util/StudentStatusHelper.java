@@ -24,7 +24,7 @@ public class StudentStatusHelper {
      * @param scores Danh sách điểm hiện có của sinh viên
      * @return StudentStatusResult chứa Status mới và Message giải thích
      */
-    public StudentStatusResult determineStatus(Student student, List<Score> scores) {
+    public StudentStatusResult determineStatus(Student student, List<Score> scores, int currentYear) {
         Faculty faculty = student.getFaculty();
 
         // 1. Kiểm tra dữ liệu đầu vào cơ bản
@@ -32,8 +32,7 @@ public class StudentStatusHelper {
             return new StudentStatusResult(StudentStatus.STUDYING, "Thông tin Khoa hoặc Năm nhập học chưa hoàn thiện.");
         }
 
-        // 2. Tính toán các thông số thời gian
-        int currentYear = LocalDate.now().getYear();
+        // 2. Tính toán các thông số thời
         int yearsStudied = currentYear - student.getEnrollmentYear();
         int maxAllowedYears = faculty.getDuration() + 3; // Thời gian tối đa = Duration + 3 năm ân hạn
 
