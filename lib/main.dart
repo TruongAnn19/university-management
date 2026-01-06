@@ -14,7 +14,9 @@ void main() async {
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug,
     appleProvider: AppleProvider.debug,
-    webProvider: ReCaptchaV3Provider('6LedfR4sAAAAAKCV2HH9osQQMqC8HQuN-Ucm9NWJ')
+    webProvider: ReCaptchaV3Provider(
+      '6LedfR4sAAAAAKCV2HH9osQQMqC8HQuN-Ucm9NWJ',
+    ),
   );
   runApp(const MyApp());
 }

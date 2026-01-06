@@ -11,11 +11,11 @@ class LoginResponse {
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(
-      token: json['token'] ?? json['accessToken'] ?? "", 
+      token: json['token'] ?? json['accessToken'] ?? "",
       username: json['username'] ?? "",
-      role: (json['roles'] != null && (json['roles'] as List).isNotEmpty) 
-            ? json['roles'][0]
-            : (json['role'] ?? ""),
+      role: (json['roles'] != null && (json['roles'] as List).isNotEmpty)
+          ? json['roles'][0]
+          : (json['role'] ?? ""),
     );
   }
 }

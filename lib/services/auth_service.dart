@@ -8,7 +8,11 @@ class AuthService {
 
   final _storage = const FlutterSecureStorage();
 
-  Future<bool> login(String username, String password, String captchaToken) async {
+  Future<bool> login(
+    String username,
+    String password,
+    String captchaToken,
+  ) async {
     try {
       print("Đang gọi API: $baseUrl/login");
 
