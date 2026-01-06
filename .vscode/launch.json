@@ -8,12 +8,11 @@
             "name": "uni_management_mobile",
             "request": "launch",
             "type": "dart",
+            "program": "lib/main.dart",
             "args": [
-                "--web-port", 
-                "3000"
+                "--web-port=3000",
             ]
         },
-
         {
             "name": "uni_management_mobile",
             "request": "launch",

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "647281240086",
+    "project_id": "uni-management-7d0db",
+    "storage_bucket": "uni-management-7d0db.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647281240086:android:4e1c17e3dcea4cde972d37",
+        "android_client_info": {
+          "package_name": "com.example.uni_management_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClqsV3cOYPyZ4PS3p9okPr4jSpFNSFqCw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

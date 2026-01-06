@@ -2,9 +2,20 @@ import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'services/auth_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Lưu ý: Khi đang code/test trên máy ảo, bạn dùng provider là "debug"
+  // Khi nào build ra file apk/ipa để cài lên máy thật thì đổi lại
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.debug,
+    appleProvider: AppleProvider.debug,
+    webProvider: ReCaptchaV3Provider('6LedfR4sAAAAAKCV2HH9osQQMqC8HQuN-Ucm9NWJ')
+  );
   runApp(const MyApp());
 }
 
@@ -76,7 +87,6 @@ class _CheckAuthScreenState extends State<CheckAuthScreen> {
 
         // 3. Mặc định về Login nếu có lỗi
         return const LoginScreen();
-        
       },
     );
   }
