@@ -16,12 +16,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final bool isStudent = true;
   String studentName = "Sinh viên";
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -30,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _fetchStudentName() async {
     final studentService = StudentService();
+    // Giả sử API lấy profile
     final profile = await studentService.getProfileInfo();
     if (profile != null && mounted) {
       setState(() {
@@ -40,87 +35,123 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> pages = [
-      _buildDashboard(context),
-      const Center(child: Text("Lịch học (Đang phát triển)")),
-      const ProfileScreen(),
-    ];
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 600) {
+          return _buildMobileLayout();
+        } else {
+          return _buildDesktopLayout();
+        }
+      },
+    );
+  }
+
+  Widget _buildMobileLayout() {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: _selectedIndex == 2
           ? null
-          : AppBar(
-              title: const Text("Cổng thông tin sinh viên"),
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              elevation: 0,
-              automaticallyImplyLeading: false,
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.notifications),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const NotificationsScreen(),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-      body: pages[_selectedIndex],
+          : _buildCommonAppBar(),
+      body: _buildBodyContent(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
+        onTap: (index) => setState(() => _selectedIndex = index),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Lịch học',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Lịch học'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cá nhân'),
         ],
       ),
     );
   }
-  // --- WIDGETS CON ---
+
+  Widget _buildDesktopLayout() {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: _selectedIndex == 2 ? null : _buildCommonAppBar(),
+      body: Row(
+        children: [
+          NavigationRail(
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: (index) => setState(() => _selectedIndex = index),
+            labelType: NavigationRailLabelType.all,
+            destinations: const [
+              NavigationRailDestination(
+                icon: Icon(Icons.home),
+                label: Text('Trang chủ'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.calendar_month),
+                label: Text('Lịch học'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.person),
+                label: Text('Cá nhân'),
+              ),
+            ],
+          ),
+          const VerticalDivider(thickness: 1, width: 1),
+          Expanded(
+            child: _buildBodyContent(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  AppBar _buildCommonAppBar() {
+    return AppBar(
+      title: const Text("Cổng thông tin sinh viên"),
+      backgroundColor: Colors.blue,
+      foregroundColor: Colors.white,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.notifications),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const NotificationsScreen()),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBodyContent() {
+    switch (_selectedIndex) {
+      case 0:
+        return _buildDashboard(context);
+      case 1:
+        return const Center(child: Text("Lịch học (Đang phát triển)"));
+      case 2:
+        return const ProfileScreen();
+      default:
+        return _buildDashboard(context);
+    }
+  }
 
   Widget _buildDashboard(BuildContext context) {
-    // 1. Chỉ giữ lại các chức năng nghiệp vụ, BỎ "Thông tin cá nhân"
     List<Map<String, dynamic>> menuItems = [];
 
     if (isStudent) {
       menuItems.addAll([
-        {
-          'icon': Icons.bar_chart,
-          'label': 'Kết quả học tập',
-          'color': Colors.green,
-          'route': '/my-scores',
-        },
-        {
-          'icon': Icons.edit_note,
-          'label': 'Đăng ký tín chỉ',
-          'color': Colors.orange,
-          'route': '/register-course',
-        },
-        {
-          'icon': Icons.monetization_on,
-          'label': 'Học phí',
-          'color': Colors.purple,
-          'route': '/tuition',
-        },
-        {
-          'icon': Icons.assignment,
-          'label': 'Thi trực tuyến',
-          'color': Colors.redAccent,
-          'route': '/online-exam',
-        },
+        {'icon': Icons.bar_chart, 'label': 'Kết quả học tập', 'color': Colors.green, 'route': '/my-scores'},
+        {'icon': Icons.edit_note, 'label': 'Đăng ký tín chỉ', 'color': Colors.orange, 'route': '/register-course'},
+        {'icon': Icons.monetization_on, 'label': 'Học phí', 'color': Colors.purple, 'route': '/tuition'},
+        {'icon': Icons.assignment, 'label': 'Thi trực tuyến', 'color': Colors.redAccent, 'route': '/online-exam'},
+        {'icon': Icons.book, 'label': 'Thư viện số', 'color': Colors.teal, 'route': '/library'},
+        {'icon': Icons.medical_services, 'label': 'Y tế học đường', 'color': Colors.pink, 'route': '/health'},
       ]);
     }
+
+    double screenWidth = MediaQuery.of(context).size.width;
+    int crossAxisCount = screenWidth > 600 ? 4 : 2;
 
     return Column(
       children: [
@@ -130,8 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(15.0),
             child: GridView.builder(
               itemCount: menuItems.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount, 
                 crossAxisSpacing: 15,
                 mainAxisSpacing: 15,
                 childAspectRatio: 1.2,
@@ -142,8 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: item['icon'],
                   label: item['label'],
                   color: item['color'],
-                  onTap: () =>
-                      _handleNavigation(context, item['route'], item['label']),
+                  onTap: () => _handleNavigation(context, item['route'], item['label']),
                 );
               },
             ),
@@ -169,14 +199,14 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Text(
             "Xin chào, $studentName!",
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 5),
-          Text(
+          const SizedBox(height: 5),
+          const Text(
             "Chúc bạn một ngày học tập hiệu quả.",
             style: TextStyle(color: Colors.white70),
           ),
@@ -233,10 +263,16 @@ class _HomeScreenState extends State<HomeScreen> {
           MaterialPageRoute(builder: (_) => const MyScoresScreen()),
         );
         break;
-      // Các case khác...
-      default:
+      case '/register-course':
+      case '/tuition':
+      case '/online-exam':
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Chức năng $label đang phát triển")),
+        );
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Chức năng chưa hỗ trợ")),
         );
     }
   }
