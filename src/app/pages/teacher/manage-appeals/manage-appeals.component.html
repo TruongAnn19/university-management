@@ -1,20 +1,26 @@
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold text-primary">📩 Quản Lý Phúc Khảo</h2>
-    <button class="btn btn-outline-primary" (click)="loadPendingAppeals()">
+<div class="animate-in">
+
+  <!-- Page Header -->
+  <div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+      <h1 class="page-title">Quản lý Phúc khảo</h1>
+      <p class="page-subtitle">Xem xét và xử lý các đơn yêu cầu phúc khảo điểm</p>
+    </div>
+    <button class="btn btn-outline-primary btn-sm rounded-pill px-3" (click)="loadPendingAppeals()">
       <i class="bi bi-arrow-clockwise me-1"></i> Làm mới
     </button>
   </div>
 
-  <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+  <!-- Table Card -->
+  <div class="uni-card p-0" style="overflow: hidden;">
     <div class="table-responsive">
       <table class="table table-hover align-middle mb-0">
-        <thead class="bg-light">
-          <tr>
-            <th class="ps-4 text-center">SV</th>
+        <thead style="background:#f8fafc;">
+          <tr style="font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:#64748b;">
+            <th class="ps-4 py-3">Sinh viên</th>
             <th class="text-center">Môn học</th>
             <th class="text-center">Điểm cũ</th>
-            <th class="text-center" style="width: 30%;">Lý do</th>
+            <th style="width:30%;">Lý do</th>
             <th class="text-center">Trạng thái</th>
             <th class="text-end pe-4">Hành động</th>
           </tr>
@@ -22,29 +28,45 @@
         <tbody>
           @for (appeal of appeals; track appeal.id) {
           <tr>
-            <td class="ps-4 text-center">
-              <div class="fw-bold">{{ appeal.studentName }}</div>
-              <small class="text-muted">{{ appeal.studentCode }}</small>
+            <td class="ps-4">
+              <div class="appeal-student">
+                <div class="appeal-avatar">{{ appeal.studentName.charAt(0) }}</div>
+                <div>
+                  <div class="fw-semibold" style="font-size:.875rem;">{{ appeal.studentName }}</div>
+                  <div style="font-size:.75rem; color:#94a3b8;">{{ appeal.studentCode }}</div>
+                </div>
+              </div>
             </td>
-            <td class="fw-bold text-primary text-center">{{ appeal.subjectName }}</td>
-            <td class="fw-bold text-center">{{ appeal.oldScore }}</td>
+            <td class="text-center fw-semibold" style="font-size:.875rem; color:#4f46e5;">{{ appeal.subjectName }}</td>
             <td class="text-center">
-              <div class="text-truncate mx-auto" style="max-width: 250px;" [title]="appeal.reason">
+              <span class="score-pill">{{ appeal.oldScore }}</span>
+            </td>
+            <td>
+              <div class="text-truncate" style="max-width: 260px; font-size:.83rem; color:#475569;"
+                [title]="appeal.reason">
                 {{ appeal.reason }}
               </div>
             </td>
-            <td class="text-center"><span class="badge bg-warning text-dark">Chờ duyệt</span></td>
+            <td class="text-center">
+              <span class="badge rounded-pill"
+                style="background:#fef3c7; color:#d97706; border:1px solid #fde68a; padding:.3rem .8rem; font-size:.72rem;">
+                <i class="bi bi-clock me-1"></i> Chờ duyệt
+              </span>
+            </td>
             <td class="text-end pe-4">
-              <button class="btn btn-sm btn-primary px-3 rounded-pill" data-bs-toggle="modal"
+              <button class="btn btn-primary btn-sm rounded-pill px-3" data-bs-toggle="modal"
                 data-bs-target="#reviewModal" (click)="openReviewModal(appeal)">
-                Xử lý
+                <i class="bi bi-pencil-square me-1"></i> Xử lý
               </button>
             </td>
           </tr>
           } @empty {
           <tr>
-            <td colspan="6" class="text-center py-5 text-muted">
-              🎉 Không có đơn phúc khảo nào cần xử lý.
+            <td colspan="6" class="text-center py-5" style="color:#94a3b8;">
+              <i class="bi bi-check-circle-fill"
+                style="font-size:2.5rem; color:#10b981; display:block; margin-bottom:.75rem;"></i>
+              <div style="font-weight:600;">Không có đơn nào cần xử lý</div>
+              <div style="font-size:.83rem; margin-top:.3rem;">Tất cả đơn phúc khảo đã được xử lý</div>
             </td>
           </tr>
           }
@@ -52,62 +74,84 @@
       </table>
     </div>
   </div>
+
 </div>
 
+<!-- Review Modal – ngoài animate-in để tránh transform context -->
 <div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">Xử lý đơn phúc khảo #{{ selectedAppeal?.id }}</h5>
+    <div class="modal-content border-0 shadow-lg" style="border-radius:16px; overflow:hidden;">
+
+      <div class="modal-header text-white border-0 py-3" style="background: linear-gradient(135deg, #4f46e5, #6366f1);">
+        <h5 class="modal-title fw-bold" style="font-size:.95rem;">
+          <i class="bi bi-clipboard-check me-2"></i>
+          Xử lý đơn phúc khảo #{{ selectedAppeal?.id }}
+        </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" id="closeModalBtn"></button>
       </div>
 
       @if (selectedAppeal) {
-        <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
-          <div class="modal-body p-4">
-            <div class="alert alert-light border mb-3">
-              <p class="mb-1"><strong>Sinh viên:</strong> {{ selectedAppeal.studentName }} ({{ selectedAppeal.studentCode }})</p>
-              <p class="mb-1"><strong>Môn:</strong> {{ selectedAppeal.subjectName }}</p>
-              <p class="mb-0 text-muted italic"><strong>Lý do SV:</strong> "{{ selectedAppeal.reason }}"</p>
+      <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+        <div class="modal-body p-4">
+
+          <!-- Student info summary -->
+          <div class="p-3 rounded-3 mb-4" style="background:#f5f3ff; border:1px solid #e0e7ff;">
+            <div
+              style="font-size:.8rem; color:#6366f1; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin-bottom:.5rem;">
+              Thông tin đơn
             </div>
-
-            <div class="mb-3">
-              <label class="form-label fw-bold">Quyết định</label>
-              <select class="form-select" formControlName="status">
-                <option value="APPROVED">Chấp nhận (Sửa điểm)</option>
-                <option value="REJECTED">Từ chối (Giữ nguyên)</option>
-              </select>
-            </div>
-
-            @if (reviewForm.get('status')?.value === 'APPROVED') {
-              <div class="mb-3">
-                <label class="form-label fw-bold">Điểm số mới <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="newScore"
-                  [class.is-invalid]="reviewForm.get('newScore')?.invalid && reviewForm.get('newScore')?.touched">
-                <div class="invalid-feedback">Điểm phải từ 0 đến 10.</div>
-              </div>
-            }
-
-            <div class="mb-3">
-              <label class="form-label fw-bold">Phản hồi cho sinh viên <span class="text-danger">*</span></label>
-              <textarea class="form-control" rows="3" formControlName="teacherResponse"
-                placeholder="Nhập nội dung phản hồi..."
-                [class.is-invalid]="reviewForm.get('teacherResponse')?.invalid && reviewForm.get('teacherResponse')?.touched"></textarea>
-              <div class="invalid-feedback">Vui lòng nhập phản hồi (ít nhất 10 ký tự).</div>
+            <div style="font-size:.88rem; color:#1e1b4b; line-height:2;">
+              <span class="fw-semibold">Sinh viên:</span> {{ selectedAppeal.studentName }} ({{
+              selectedAppeal.studentCode }})<br>
+              <span class="fw-semibold">Môn học:</span> {{ selectedAppeal.subjectName }}<br>
+              <span style="color:#64748b; font-style:italic;">"{{ selectedAppeal.reason }}"</span>
             </div>
           </div>
 
-          <div class="modal-footer bg-light">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button type="submit" class="btn btn-primary px-4" [disabled]="reviewForm.invalid || isProcessing">
-              @if(isProcessing) { 
-                <span class="spinner-border spinner-border-sm me-1"></span> 
-              } @else { 
-                Xác nhận xử lý 
-              }
-            </button>
+          <!-- Decision -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold" style="font-size:.85rem;">Quyết định</label>
+            <select class="form-select" formControlName="status" style="border-radius:10px;">
+              <option value="APPROVED">✅ Chấp nhận – Sửa điểm</option>
+              <option value="REJECTED">❌ Từ chối – Giữ nguyên điểm</option>
+            </select>
           </div>
-        </form>
+
+          <!-- New score (when APPROVED) -->
+          @if (reviewForm.get('status')?.value === 'APPROVED') {
+          <div class="mb-3">
+            <label class="form-label fw-semibold" style="font-size:.85rem;">
+              Điểm số mới <span class="text-danger">*</span>
+            </label>
+            <input type="number" class="form-control" formControlName="newScore" style="border-radius:10px;"
+              [class.is-invalid]="reviewForm.get('newScore')?.invalid && reviewForm.get('newScore')?.touched">
+            <div class="invalid-feedback">Điểm phải từ 0 đến 10.</div>
+          </div>
+          }
+
+          <!-- Teacher response -->
+          <div class="mb-1">
+            <label class="form-label fw-semibold" style="font-size:.85rem;">
+              Phản hồi cho sinh viên <span class="text-danger">*</span>
+            </label>
+            <textarea class="form-control" rows="3" formControlName="teacherResponse"
+              style="border-radius:10px; resize:none;" placeholder="Nhập nội dung phản hồi..."
+              [class.is-invalid]="reviewForm.get('teacherResponse')?.invalid && reviewForm.get('teacherResponse')?.touched">
+            </textarea>
+            <div class="invalid-feedback">Vui lòng nhập phản hồi (ít nhất 10 ký tự).</div>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0 px-4 pb-4">
+          <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary rounded-pill px-5"
+            [disabled]="reviewForm.invalid || isProcessing">
+            <span *ngIf="isProcessing" class="spinner-border spinner-border-sm me-1"></span>
+            <i *ngIf="!isProcessing" class="bi bi-check-lg me-1"></i>
+            {{ isProcessing ? 'Đang xử lý...' : 'Xác nhận' }}
+          </button>
+        </div>
+      </form>
       }
     </div>
   </div>

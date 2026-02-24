@@ -1,1 +1,111 @@
-<p>dashboard works!</p>
+<div class="animate-in">
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+        <div class="welcome-content">
+            <div class="welcome-icon">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <div class="welcome-text">
+                <h1>{{ greeting }}, {{ userDisplayName }}! 👋</h1>
+                <p>Chào mừng bạn đến với hệ thống UniManage</p>
+            </div>
+            <div class="welcome-badge" [ngClass]="roleColorClass">{{ roleLabel }}</div>
+        </div>
+
+        <!-- Decorative -->
+        <div class="banner-deco-1"></div>
+        <div class="banner-deco-2"></div>
+    </div>
+
+    <!-- Student Quick Actions -->
+    <ng-container *ngIf="isStudent">
+        <div class="section-title">Truy cập nhanh</div>
+        <div class="quick-actions">
+            <a routerLink="/my-scores" class="quick-card delay-1">
+                <div class="qc-icon" style="background: linear-gradient(135deg, #4f46e5, #6366f1);">
+                    <i class="bi bi-bar-chart-fill"></i>
+                </div>
+                <div class="qc-label">Xem điểm</div>
+                <div class="qc-desc">Kết quả học tập của bạn</div>
+                <i class="bi bi-arrow-right qc-arrow"></i>
+            </a>
+            <a routerLink="/register-course" class="quick-card delay-2">
+                <div class="qc-icon" style="background: linear-gradient(135deg, #0891b2, #06b6d4);">
+                    <i class="bi bi-journal-plus"></i>
+                </div>
+                <div class="qc-label">Đăng ký tín chỉ</div>
+                <div class="qc-desc">Chọn môn học học kỳ này</div>
+                <i class="bi bi-arrow-right qc-arrow"></i>
+            </a>
+            <a routerLink="/profile/me" class="quick-card delay-3">
+                <div class="qc-icon" style="background: linear-gradient(135deg, #7c3aed, #8b5cf6);">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div class="qc-label">Hồ sơ cá nhân</div>
+                <div class="qc-desc">Xem thông tin tài khoản</div>
+                <i class="bi bi-arrow-right qc-arrow"></i>
+            </a>
+        </div>
+    </ng-container>
+
+    <!-- Admin/Teacher Quick Actions -->
+    <ng-container *ngIf="isAdminOrTeacher">
+        <div class="section-title">Quản lý điểm số</div>
+        <div class="quick-actions">
+            <a routerLink="/manage-scores" class="quick-card delay-1">
+                <div class="qc-icon" style="background: linear-gradient(135deg, #4f46e5, #6366f1);">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+                <div class="qc-label">Quản lý điểm</div>
+                <div class="qc-desc">Tra cứu & nhập điểm thủ công</div>
+                <i class="bi bi-arrow-right qc-arrow"></i>
+            </a>
+            <a routerLink="/appeals" class="quick-card delay-2">
+                <div class="qc-icon" style="background: linear-gradient(135deg, #d97706, #f59e0b);">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <div class="qc-label">Duyệt phúc khảo</div>
+                <div class="qc-desc">Xem xét yêu cầu phúc khảo</div>
+                <i class="bi bi-arrow-right qc-arrow"></i>
+            </a>
+            <a routerLink="/list-student" class="quick-card delay-3">
+                <div class="qc-icon" style="background: linear-gradient(135deg, #059669, #10b981);">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="qc-label">Danh sách sinh viên</div>
+                <div class="qc-desc">Tìm kiếm thông tin sinh viên</div>
+                <i class="bi bi-arrow-right qc-arrow"></i>
+            </a>
+        </div>
+
+        <div class="section-title mt-4">Nhập dữ liệu Excel</div>
+        <div class="quick-actions">
+            <a routerLink="/import-scores" class="quick-card delay-1">
+                <div class="qc-icon" style="background: linear-gradient(135deg, #0891b2, #06b6d4);">
+                    <i class="bi bi-file-earmark-spreadsheet"></i>
+                </div>
+                <div class="qc-label">Import Điểm</div>
+                <div class="qc-desc">Tải lên bảng điểm Excel</div>
+                <i class="bi bi-arrow-right qc-arrow"></i>
+            </a>
+            <a routerLink="/import-students" class="quick-card delay-2">
+                <div class="qc-icon" style="background: linear-gradient(135deg, #7c3aed, #8b5cf6);">
+                    <i class="bi bi-person-plus-fill"></i>
+                </div>
+                <div class="qc-label">Import Sinh viên</div>
+                <div class="qc-desc">Thêm sinh viên hàng loạt</div>
+                <i class="bi bi-arrow-right qc-arrow"></i>
+            </a>
+            <a routerLink="/import-subjects" class="quick-card delay-3">
+                <div class="qc-icon" style="background: linear-gradient(135deg, #db2777, #ec4899);">
+                    <i class="bi bi-book-fill"></i>
+                </div>
+                <div class="qc-label">Import Môn học</div>
+                <div class="qc-desc">Thêm danh sách môn học</div>
+                <i class="bi bi-arrow-right qc-arrow"></i>
+            </a>
+        </div>
+    </ng-container>
+
+</div>

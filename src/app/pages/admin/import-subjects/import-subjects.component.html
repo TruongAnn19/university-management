@@ -1,31 +1,64 @@
-<div class="import-container">
-  <h2>📚 Import Danh Sách Môn Học</h2>
-  
-  <div class="note-box">
-    <p>⚠️ <strong>Cấu trúc File Excel:</strong></p>
-    <ul>
-      <li>Cột 1: Mã Môn (VD: JAVA01) - <strong>Bắt buộc</strong></li>
-      <li>Cột 2: Tên Môn (VD: Lập trình Java) - <strong>Bắt buộc</strong></li>
-      <li>Cột 3: Số Tín Chỉ (VD: 3)</li>
-      <li>Cột 4: % Điểm Quá Trình (VD: 30)</li>
-      <li>Cột 5: % Điểm Thi (VD: 70)</li>
-    </ul>
+<div class="import-container animate-in">
+
+  <div class="import-header page-header">
+    <div>
+      <h1 class="page-title">Import Môn học</h1>
+      <p class="page-subtitle">Tải lên file Excel để thêm môn học vào hệ thống hàng loạt</p>
+    </div>
   </div>
 
-  <div class="upload-box">
-    <input type="file" (change)="onFileSelected($event)" accept=".xlsx, .xls" class="file-input">
-    
+  <div class="uni-card mb-4" style="border-left: 4px solid #6366f1; background: #f5f3ff;">
+    <div class="d-flex gap-3 align-items-start">
+      <i class="bi bi-info-circle-fill" style="color:#6366f1; font-size:1.1rem; margin-top:.1rem;"></i>
+      <div>
+        <div class="fw-semibold mb-2" style="font-size:.875rem; color:#3730a3;">Cấu trúc File Excel</div>
+        <div class="row g-2" style="font-size:.83rem; color:#4338ca;">
+          <div class="col-6"><span class="badge"
+              style="background:#e0e7ff; color:#4338ca; border-radius:6px; padding:.3rem .6rem;">Cột 1</span> Mã Môn
+            (VD: JAVA01) <strong>*</strong></div>
+          <div class="col-6"><span class="badge"
+              style="background:#e0e7ff; color:#4338ca; border-radius:6px; padding:.3rem .6rem;">Cột 2</span> Tên Môn
+            <strong>*</strong></div>
+          <div class="col-6"><span class="badge"
+              style="background:#e0e7ff; color:#4338ca; border-radius:6px; padding:.3rem .6rem;">Cột 3</span> Số Tín Chỉ
+            (VD: 3)</div>
+          <div class="col-6"><span class="badge"
+              style="background:#e0e7ff; color:#4338ca; border-radius:6px; padding:.3rem .6rem;">Cột 4</span> % Quá
+            Trình (VD: 30)</div>
+          <div class="col-12"><span class="badge"
+              style="background:#e0e7ff; color:#4338ca; border-radius:6px; padding:.3rem .6rem;">Cột 5</span> % Điểm Thi
+            (VD: 70)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="upload-card">
+    <label class="upload-zone" for="fileInputSubjects">
+      <div class="upload-zone-icon"><i class="bi bi-book-fill"></i></div>
+      <div class="upload-zone-title">Kéo thả file vào đây hoặc nhấn để chọn</div>
+      <div class="upload-zone-hint">Hỗ trợ định dạng <strong>.xlsx</strong>, <strong>.xls</strong></div>
+      <input id="fileInputSubjects" type="file" class="file-input" (change)="onFileSelected($event)"
+        accept=".xlsx, .xls">
+    </label>
+
     <div *ngIf="selectedFile" class="file-info">
-      📄 {{ selectedFile.name }}
+      <i class="bi bi-file-earmark-excel-fill"></i>
+      <span>{{ selectedFile.name }} <small style="color:#10b981;">({{ (selectedFile.size / 1024) | number:'1.0-2' }}
+          KB)</small></span>
     </div>
 
-    <button (click)="onUpload()" [disabled]="!selectedFile || isLoading" class="upload-btn">
-      <span *ngIf="isLoading">⏳ Đang xử lý...</span>
-      <span *ngIf="!isLoading">📤 Tải lên</span>
-    </button>
+    <div class="upload-actions">
+      <button class="upload-btn" (click)="onUpload()" [disabled]="!selectedFile || isLoading" id="btn-upload-subjects">
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+        <i *ngIf="!isLoading" class="bi bi-upload"></i>
+        {{ isLoading ? 'Đang xử lý...' : 'Tải lên hệ thống' }}
+      </button>
+    </div>
   </div>
 
   <div *ngIf="message" class="alert" [ngClass]="{'alert-success': !isError, 'alert-danger': isError}">
+    <i [class]="isError ? 'bi bi-x-circle-fill' : 'bi bi-check-circle-fill'"></i>
     {{ message }}
   </div>
 </div>

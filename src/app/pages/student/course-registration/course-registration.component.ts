@@ -20,7 +20,6 @@ export class CourseRegistrationComponent implements OnInit {
   faculties: Faculty[] = [];
 
   selectedFacultyId: number | null = null;
-  // myStudentCode = '';
   isLoading = false;
   message = '';
   isError = false;

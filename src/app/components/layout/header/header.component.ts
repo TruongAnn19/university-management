@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { NotificationService, NotificationResponse } from '../../../services/notify/notification.service';
-import { CommonModule } from '@angular/common'
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
@@ -16,20 +16,40 @@ export class HeaderComponent implements OnInit, OnDestroy {
   pollingInterval: any;
 
   authService = inject(AuthService);
+  notiService = inject(NotificationService);
 
   user = this.authService.getUserInfo();
 
+  // ─── Role helpers ───────────────────────────────────
   get isStudent() { return this.user?.role === 'STUDENT'; }
   get isAdminOrTeacher() { return ['ADMIN', 'TEACHER'].includes(this.user?.role); }
 
-  constructor(private notiService: NotificationService) { }
+  // ─── Display helpers ────────────────────────────────
+  get userInitial() {
+    return (this.user?.name || this.user?.username || 'U').charAt(0).toUpperCase();
+  }
+  get userName() {
+    return this.user?.name || this.user?.username || 'Người dùng';
+  }
+  get roleLabel() {
+    const map: Record<string, string> = {
+      ADMIN: 'Quản trị viên',
+      TEACHER: 'Giảng viên',
+      STUDENT: 'Sinh viên'
+    };
+    return map[this.user?.role] || this.user?.role || '';
+  }
 
+  // ─── Lifecycle ──────────────────────────────────────
   ngOnInit(): void {
-    this.fetchNotifications();
-
-    this.pollingInterval = setInterval(() => {
+    // Chỉ fetch thông báo khi là sinh viên
+    if (this.isStudent) {
       this.fetchNotifications();
-    }, 30000);
+
+      this.pollingInterval = setInterval(() => {
+        this.fetchNotifications();
+      }, 30000);
+    }
   }
 
   ngOnDestroy(): void {
@@ -38,6 +58,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ─── Methods ────────────────────────────────────────
   fetchNotifications() {
     this.notiService.getMyNotifications().subscribe({
       next: (data) => {
@@ -51,16 +72,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onNotificationClick(noti: NotificationResponse) {
     if (!noti.isRead) {
       this.notiService.markAsRead(noti.id).subscribe({
-        next: () => {
-          noti.isRead = true;
-          this.unreadCount--;
-        },
+        next: () => { noti.isRead = true; this.unreadCount--; },
         error: (err) => console.error('Lỗi mark read:', err)
       });
     }
-
-    // Logic phụ: Có thể navigate tới trang xem chi tiết điểm nếu muốn
-    // this.router.navigate(['/student/scores']);
   }
-
 }

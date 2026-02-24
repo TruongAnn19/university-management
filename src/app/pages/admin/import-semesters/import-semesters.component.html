@@ -1,27 +1,64 @@
-<div class="import-container">
-  <h2>📅 Import Danh Sách Học Kỳ</h2>
-  
-  <div class="note-box">
-    <p>⚠️ <strong>Cấu trúc File Excel:</strong></p>
-    <ul>
-      <li>Cột 1: Tên Học Kỳ (VD: Học kỳ 2 Năm 2024-2025)</li>
-      <li>Cột 2: Mã Kỳ (VD: 2024_2) - <strong>Duy nhất</strong></li>
-      <li>Cột 3: Ngày Bắt Đầu (yyyy-MM-dd)</li>
-      <li>Cột 4: Ngày Kết Thúc (yyyy-MM-dd)</li>
-      <li>Cột 5: Trạng Thái (1 = Mở, 0 = Đóng)</li>
-    </ul>
+<div class="import-container animate-in">
+
+  <div class="import-header page-header">
+    <div>
+      <h1 class="page-title">Import Học kỳ</h1>
+      <p class="page-subtitle">Tải lên file Excel để tạo học kỳ trong hệ thống</p>
+    </div>
   </div>
 
-  <div class="upload-box">
-    <input type="file" (change)="onFileSelected($event)" accept=".xlsx, .xls" class="file-input">
-    <div *ngIf="selectedFile" class="file-info">📄 {{ selectedFile.name }}</div>
-    <button (click)="onUpload()" [disabled]="!selectedFile || isLoading" class="upload-btn">
-      <span *ngIf="isLoading">⏳ Đang xử lý...</span>
-      <span *ngIf="!isLoading">📤 Tải lên</span>
-    </button>
+  <div class="uni-card mb-4" style="border-left: 4px solid #0891b2; background: #ecfeff;">
+    <div class="d-flex gap-3 align-items-start">
+      <i class="bi bi-calendar3" style="color:#0891b2; font-size:1.1rem; margin-top:.1rem;"></i>
+      <div>
+        <div class="fw-semibold mb-2" style="font-size:.875rem; color:#164e63;">Cấu trúc File Excel</div>
+        <div class="row g-2" style="font-size:.83rem; color:#0e7490;">
+          <div class="col-6"><span class="badge"
+              style="background:#cffafe; color:#0e7490; border-radius:6px; padding:.3rem .6rem;">Cột 1</span> Tên Học Kỳ
+          </div>
+          <div class="col-6"><span class="badge"
+              style="background:#cffafe; color:#0e7490; border-radius:6px; padding:.3rem .6rem;">Cột 2</span> Mã Kỳ (duy
+            nhất)</div>
+          <div class="col-6"><span class="badge"
+              style="background:#cffafe; color:#0e7490; border-radius:6px; padding:.3rem .6rem;">Cột 3</span> Ngày Bắt
+            Đầu</div>
+          <div class="col-6"><span class="badge"
+              style="background:#cffafe; color:#0e7490; border-radius:6px; padding:.3rem .6rem;">Cột 4</span> Ngày Kết
+            Thúc</div>
+          <div class="col-12"><span class="badge"
+              style="background:#cffafe; color:#0e7490; border-radius:6px; padding:.3rem .6rem;">Cột 5</span> Trạng Thái
+            (1 = Mở, 0 = Đóng)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="upload-card">
+    <label class="upload-zone" for="fileInputSemesters">
+      <div class="upload-zone-icon"><i class="bi bi-calendar-range-fill"></i></div>
+      <div class="upload-zone-title">Kéo thả file vào đây hoặc nhấn để chọn</div>
+      <div class="upload-zone-hint">Hỗ trợ định dạng <strong>.xlsx</strong>, <strong>.xls</strong></div>
+      <input id="fileInputSemesters" type="file" class="file-input" (change)="onFileSelected($event)"
+        accept=".xlsx, .xls">
+    </label>
+
+    <div *ngIf="selectedFile" class="file-info">
+      <i class="bi bi-file-earmark-excel-fill"></i>
+      <span>{{ selectedFile.name }} <small style="color:#10b981;">({{ (selectedFile.size / 1024) | number:'1.0-2' }}
+          KB)</small></span>
+    </div>
+
+    <div class="upload-actions">
+      <button class="upload-btn" (click)="onUpload()" [disabled]="!selectedFile || isLoading" id="btn-upload-semesters">
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+        <i *ngIf="!isLoading" class="bi bi-upload"></i>
+        {{ isLoading ? 'Đang xử lý...' : 'Tải lên hệ thống' }}
+      </button>
+    </div>
   </div>
 
   <div *ngIf="message" class="alert" [ngClass]="{'alert-success': !isError, 'alert-danger': isError}">
+    <i [class]="isError ? 'bi bi-x-circle-fill' : 'bi bi-check-circle-fill'"></i>
     {{ message }}
   </div>
 </div>

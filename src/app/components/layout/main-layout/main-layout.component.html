@@ -1,12 +1,15 @@
-<div class="d-flex">
-  
+<div class="app-layout">
+  <!-- Sidebar -->
   <app-sidebar></app-sidebar>
 
-  <div class="flex-grow-1 bg-light" style="height: 100vh; overflow-y: auto;">
-    <app-header></app-header> 
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <!-- Top Bar (Notifications, etc.) -->
+    <app-header></app-header>
 
-    <div class="p-4">
-      <router-outlet></router-outlet> 
-    </div>
+    <!-- Page Content -->
+    <main class="page-content">
+      <router-outlet></router-outlet>
+    </main>
   </div>
 </div>

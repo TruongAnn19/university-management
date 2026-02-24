@@ -1,68 +1,77 @@
-// Màu chủ đạo
-$primary: #4361ee;
-$success: #198754;
+/* ================================================
+   Manage Scores – Teacher Page
+   ================================================ */
 
-// 1. Tút lại thanh tìm kiếm
+// Search box
 .search-box {
   background: #fff;
-  transition: all 0.3s ease;
-  border: 1px solid #e0e0e0;
-  
+  border-radius: 14px;
+  border: 1.5px solid #e2e8f0;
+  transition: all .25s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+
   &:focus-within {
-    box-shadow: 0 10px 30px rgba(67, 97, 238, 0.15) !important;
-    border-color: $primary;
-    transform: translateY(-2px);
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, .15), 0 4px 16px rgba(99, 102, 241, .12);
+    transform: translateY(-1px);
   }
 
   input {
     background: transparent;
+    border: none;
+    box-shadow: none !important;
+    font-size: .95rem;
+    color: #0f172a;
+
+    &::placeholder {
+      color: #94a3b8;
+    }
+
+    &:focus {
+      outline: none;
+      border: none;
+      box-shadow: none !important;
+    }
   }
 }
 
-// 2. Avatar sinh viên (Giả lập)
+// Student avatar
 .student-avatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  font-size: 2rem;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  font-size: 1.6rem;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 4px solid #fff;
-  background: linear-gradient(135deg, #e0f2ff 0%, #d1e7dd 100%);
-  color: $primary;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  color: #4f46e5;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, .2);
+  border: 2px solid rgba(99, 102, 241, .2);
 }
 
-// 3. Hiệu ứng bảng
-.table-hover tbody tr:hover {
-  background-color: rgba($primary, 0.02);
-  cursor: default;
+// Pass / Fail spans used in the table
+.pass {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .2rem .7rem;
+  border-radius: 99px;
+  font-size: .75rem;
+  font-weight: 600;
+  background: #d1fae5;
+  color: #065f46;
 }
 
-// 4. Modal (Popup nhập điểm)
-.modal-content {
-  border: none;
-  border-radius: 16px; // Bo cong modal
-  overflow: hidden;
-}
-
-.modal-header {
-  background-color: $success;
-  color: white;
-  
-  .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%); // Làm nút X màu trắng
-  }
-}
-
-// Làm đẹp ô nhập liệu (Floating label)
-.form-floating {
-  > .form-control {
-    border-radius: 8px;
-    &:focus {
-      border-color: $success;
-      box-shadow: 0 0 0 0.25rem rgba($success, 0.25);
-    }
-  }
+.fail {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .2rem .7rem;
+  border-radius: 99px;
+  font-size: .75rem;
+  font-weight: 600;
+  background: #fee2e2;
+  color: #991b1b;
 }

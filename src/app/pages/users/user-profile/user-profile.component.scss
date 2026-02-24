@@ -1,20 +1,20 @@
-// --- Variables ---
-$color-student: #4361ee; // Xanh dương
-$color-teacher: #2ec4b6; // Xanh ngọc
-$color-admin: #ef476f; // Đỏ hồng
-$color-gray: #6c757d;
-$bg-color: #f8f9fa;
-$card-bg: #ffffff;
+/* ================================================
+   User Profile – UniManage
+   ================================================ */
 
-// --- Mixins ---
+// Variables
+$color-student: #4f46e5;
+$color-teacher: #0891b2;
+$color-admin: #db2777;
+
 @mixin role-theme($color) {
     .card-header {
-        background: linear-gradient(135deg, $color, darken($color, 15%));
+        background: linear-gradient(135deg, $color, darken($color, 12%));
     }
 
     .role-badge {
         color: $color;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, .95);
     }
 
     .highlight-text {
@@ -22,45 +22,43 @@ $card-bg: #ffffff;
     }
 }
 
-// --- Main Styles ---
+/* Container */
 .profile-container {
-    min-height: 100vh;
+    min-height: 60vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    background-color: $bg-color;
-    padding: 20px;
+    align-items: flex-start;
+    padding: 1rem 0;
 }
 
+/* Loading */
 .loading-state {
     text-align: center;
-    color: $color-gray;
+    color: #94a3b8;
+    padding: 3rem;
 
     .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid #ddd;
-        border-top-color: $color-student;
+        width: 36px;
+        height: 36px;
+        border: 3px solid #e2e8f0;
+        border-top-color: #6366f1;
         border-radius: 50%;
         animation: spin 1s linear infinite;
-        margin: 0 auto 10px;
+        margin: 0 auto 1rem;
     }
 }
 
+/* Profile Card */
 .profile-card {
     width: 100%;
-    max-width: 400px;
-    background: $card-bg;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 440px;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 8px 40px rgba(15, 23, 42, .1);
     overflow: hidden;
-    // transition: transform 0.3s ease;
+    border: 1px solid #e2e8f0;
+    font-family: 'Inter', sans-serif;
 
-    // &:hover {
-    //     transform: translateY(-5px);
-    // }
-
-    // --- Theme Variations (Dựa trên class binding [ngClass]) ---
     &.student-theme {
         @include role-theme($color-student);
     }
@@ -73,54 +71,68 @@ $card-bg: #ffffff;
         @include role-theme($color-admin);
     }
 
-    // --- Header ---
+    // Header
     .card-header {
-        padding: 40px 20px;
+        padding: 2.5rem 1.5rem 2rem;
         text-align: center;
-        color: white;
+        color: #fff;
         position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, .08);
+            border-radius: 50%;
+        }
 
         .avatar {
-            width: 90px;
-            height: 90px;
-            background: white;
-            border-radius: 50%;
-            margin: 0 auto 15px;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, .2);
+            border: 3px solid rgba(255, 255, 255, .4);
+            border-radius: 20px;
+            margin: 0 auto 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #333;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            border: 4px solid rgba(255, 255, 255, 0.3);
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .2);
         }
 
         .user-name {
-            font-size: 1.5rem;
-            margin: 0;
+            font-size: 1.3rem;
             font-weight: 700;
+            color: #fff;
+            margin: 0;
         }
 
         .role-badge {
             display: inline-block;
-            margin-top: 10px;
-            padding: 4px 16px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 800;
+            margin-top: .6rem;
+            padding: .25rem 1rem;
+            border-radius: 99px;
+            font-size: .72rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: .08em;
         }
     }
 
-    // --- Body ---
+    // Body
     .card-body {
-        padding: 25px;
+        padding: 1.5rem 1.75rem;
 
         .info-row {
             display: flex;
-            gap: 15px;
+            gap: 1rem;
 
             .info-group {
                 flex: 1;
@@ -128,41 +140,47 @@ $card-bg: #ffffff;
         }
 
         .info-group {
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
 
             label {
                 display: block;
-                font-size: 0.85rem;
-                color: #888;
-                margin-bottom: 4px;
+                font-size: .72rem;
+                font-weight: 600;
+                color: #94a3b8;
+                text-transform: uppercase;
+                letter-spacing: .05em;
+                margin-bottom: .3rem;
             }
 
             .value {
-                font-size: 1.1rem;
+                font-size: 1rem;
                 font-weight: 600;
-                color: #333;
+                color: #0f172a;
             }
         }
 
         .divider {
             height: 1px;
-            background: #eee;
-            margin: 20px 0;
+            background: #f1f5f9;
+            margin: 1rem 0;
         }
 
-        // --- GPA Box Styling ---
+        // GPA Box
         .gpa-box {
-            background: #f8f9fa;
-            padding: 15px;
+            background: #f8fafc;
+            padding: 1rem 1.25rem;
             border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #eee;
+            border: 1px solid #e2e8f0;
+            border-left-width: 4px;
+            margin-top: .5rem;
 
             .gpa-label {
-                font-weight: 500;
-                color: #555;
+                font-weight: 600;
+                font-size: .85rem;
+                color: #475569;
             }
 
             .gpa-value {
@@ -170,62 +188,42 @@ $card-bg: #ffffff;
                 font-weight: 800;
             }
 
-            // Dynamic colors for GPA
             &.good {
-                .gpa-value {
-                    color: #2ec4b6;
-                }
+                border-left-color: #10b981;
 
-                border-left: 5px solid #2ec4b6;
+                .gpa-value {
+                    color: #059669;
+                }
             }
 
             &.avg {
-                .gpa-value {
-                    color: #ff9f1c;
-                }
+                border-left-color: #f59e0b;
 
-                border-left: 5px solid #ff9f1c;
+                .gpa-value {
+                    color: #d97706;
+                }
             }
 
             &.bad {
-                .gpa-value {
-                    color: #e71d36;
-                }
+                border-left-color: #ef4444;
 
-                border-left: 5px solid #e71d36;
+                .gpa-value {
+                    color: #dc2626;
+                }
             }
 
             &.none {
+                border-left-color: #cbd5e1;
+
                 .gpa-value {
-                    color: #ccc;
+                    color: #94a3b8;
                 }
             }
         }
     }
 
-    // --- Footer ---
-    .card-footer {
-        padding: 20px;
-        border-top: 1px solid #f0f0f0;
-        text-align: center;
-
-        .btn-logout {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            background: white;
-            border-radius: 8px;
-            font-weight: 600;
-            color: #555;
-            cursor: pointer;
-            transition: all 0.2s;
-
-            &:hover {
-                background: #f8f9fa;
-                color: #e71d36;
-                border-color: #e71d36;
-            }
-        }
+    .wave {
+        display: none;
     }
 }
 

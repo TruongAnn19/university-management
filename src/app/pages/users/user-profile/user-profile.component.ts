@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router'; // Để lấy ID từ URL nếu cần
+import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../services/users/user.service';
 import { UserProfileResponse } from '../../../models/user/user-profile.model';
 
@@ -75,10 +75,8 @@ export class UserProfileComponent implements OnInit {
 
   getGpaColorClass(gpa: any): string {
     if (gpa === null || gpa === undefined) return 'none';
-    
-    if (gpa >= 3.6) return 'good';
     if (gpa >= 3.2) return 'good';
-    if (gpa >= 2.5) return 'avg'; 
-    return 'bad';                  
+    if (gpa >= 2.5) return 'avg';
+    return 'bad';
   }
 }

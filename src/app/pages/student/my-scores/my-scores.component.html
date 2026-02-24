@@ -1,94 +1,169 @@
-<div class="container">
-  <h2>🎓 Bảng kết quả học tập</h2>
+<div class="animate-in">
 
-  <div *ngIf="isLoading" class="loading">Đang tải dữ liệu...</div>
-  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Kết quả học tập</h1>
+      <p class="page-subtitle">Bảng điểm tổng hợp tất cả các môn học</p>
+    </div>
+  </div>
 
-  <div *ngIf="transcript" class="content">
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-state">
+    <span class="spinner-border spinner-border-sm" style="color: #6366f1;"></span>
+    Đang tải bảng điểm...
+  </div>
 
-    <div class="info-card" [ngClass]="{
+  <!-- Error -->
+  <div *ngIf="errorMessage && !isLoading" class="error-state">
+    <i class="bi bi-exclamation-circle-fill"></i>
+    {{ errorMessage }}
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="transcript && !isLoading">
+
+    <!-- Student Info Card -->
+    <div class="student-info-card" [ngClass]="{
       'graduated': transcript.status === 'ĐÃ TỐT NGHIỆP',
-      'expelled': transcript.status === 'BUỘC THÔI HỌC'
+      'expelled':  transcript.status === 'BUỘC THÔI HỌC'
     }">
-      <h3>Sinh viên: {{ transcript.studentName }}</h3>
-      <p>Khoa: <strong>{{ transcript.facultyName }}</strong></p>
-      <p>Trạng thái: <strong>{{ transcript.status }}</strong></p>
-      <p class="message">🔔 {{ transcript.message }}</p>
-      <p>Lưu ý: Click <i class="bi bi-flag-fill text-warning"></i> để phúc khảo điểm</p>
+      <h2 class="student-name">{{ transcript.studentName }}</h2>
+      <div class="student-meta">
+        <div class="student-meta-item">
+          <i class="bi bi-building-fill"></i>
+          {{ transcript.facultyName }}
+        </div>
+        <div class="student-meta-item">
+          <div class="student-status-badge">{{ transcript.status }}</div>
+        </div>
+      </div>
+
+      <p *ngIf="transcript.message" class="student-notice">
+        <i class="bi bi-info-circle-fill"></i>
+        {{ transcript.message }}
+      </p>
+
+      <p class="student-notice" style="margin-top: .4rem;">
+        <i class="bi bi-flag-fill" style="color: #fbbf24;"></i>
+        Nhấn vào biểu tượng <i class="bi bi-flag-fill" style="color: #fbbf24; font-size: .8rem;"></i> để gửi yêu cầu
+        phúc khảo
+      </p>
     </div>
 
-    @if (transcript && transcript.scores && transcript.scores.length > 0) {
-    <table class="score-table">
-      <thead>
-        <tr>
-          <th class="center">STT</th>
-          <th class="center">Môn học</th>
-          <th class="center">Số TC</th>
-          <th class="center">Quá trình</th>
-          <th class="center">Điểm thi</th>
-          <th class="center">Tổng kết</th>
-          <th class="center">Kết quả</th>
-          <th class="center">Ngày cập nhật</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (s of transcript.scores; track s.subjectName; let i = $index) {
-        <tr>
-          <td class="center">{{ i + 1 }}</td>
-          <td class="subject-name center">{{ s.subjectName }}</td>
-          <td class="center">{{ s.credits }}</td>
-          <td class="center">{{ s.processScore }}</td>
-          <td class="center">{{ s.finalScore }}</td>
-          <td class="center bold">
-            {{ s.totalScore | number:'1.1-1' }}
-            <button *ngIf="s.totalScore !== null" class="btn btn-sm btn-link text-warning p-0 ms-2"
-              title="Gửi phúc khảo" (click)="openAppealModal(s)">
-              <i class="bi bi-flag-fill"></i>
-            </button>
-          </td>
-
-          <td class="center">
-            @if (s.totalScore >= 4.0) { <span class="pass">Đạt</span> }
-            @else { <span class="fail">Học lại</span> }
-          </td>
-          <td class="center">{{s.updatedAt | date:'dd/MM/yyyy HH:mm'}}</td>
-        </tr>
-        }
-      </tbody>
-    </table>
+    <!-- Score Table -->
+    @if (transcript.scores && transcript.scores.length > 0) {
+    <div class="table-card">
+      <div class="table-card-header">
+        <h5><i class="bi bi-table me-2" style="color:#6366f1;"></i> Bảng điểm chi tiết</h5>
+        <span class="badge" style="background:#eef2ff; color:#4f46e5; border-radius:99px; padding:.3rem .8rem;">
+          {{ transcript.scores.length }} môn
+        </span>
+      </div>
+      <div class="table-responsive">
+        <table class="score-table">
+          <thead>
+            <tr>
+              <th>Môn học</th>
+              <th>Số TC</th>
+              <th>Quá trình</th>
+              <th>Điểm thi</th>
+              <th>Tổng kết</th>
+              <th>Kết quả</th>
+              <th>Cập nhật</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of transcript.scores; track s.subjectName) {
+            <tr>
+              <td>{{ s.subjectName }}</td>
+              <td>{{ s.credits }}</td>
+              <td>{{ s.processScore }}</td>
+              <td>{{ s.finalScore }}</td>
+              <td>
+                <span class="score-val" [ngStyle]="{
+                  color: s.totalScore >= 8.5 ? '#059669' :
+                         s.totalScore >= 6.5 ? '#2563eb' :
+                         s.totalScore >= 4.0 ? '#d97706' : '#dc2626'
+                }">{{ s.totalScore | number:'1.1-1' }}</span>
+                <button *ngIf="s.totalScore !== null" class="btn-appeal ms-1" title="Gửi phúc khảo"
+                  (click)="openAppealModal(s)">
+                  <i class="bi bi-flag-fill"></i>
+                </button>
+              </td>
+              <td>
+                @if (s.totalScore >= 4.0) { <span class="pass-badge"><i class="bi bi-check-circle-fill"></i> Đạt</span>
+                }
+                @else { <span class="fail-badge"><i class="bi bi-x-circle-fill"></i> Học lại</span> }
+              </td>
+              <td style="color: #94a3b8; font-size:.78rem;">{{ s.updatedAt | date:'dd/MM/yyyy' }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
     } @else {
     <div class="no-data">
-      <div class="empty-state-icon">📝</div>
+      <div class="no-data-icon">📋</div>
       <p>Hiện tại bạn chưa có điểm môn học nào.</p>
     </div>
     }
 
-    <div class="modal fade" id="appealModal" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header bg-warning">
-            <h5 class="modal-title fw-bold">🚩 Yêu cầu phúc khảo</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body" *ngIf="selectedScoreForAppeal">
-            <p><strong>Môn học:</strong> {{ selectedScoreForAppeal.subjectName }}</p>
-            <p><strong>Điểm hiện tại:</strong> {{ selectedScoreForAppeal.totalScore | number:'1.1-1'}}</p>
+  </div>
+</div>
 
-            <div class="mb-3">
-              <label class="form-label">Lý do phúc khảo <span class="text-danger">*</span></label>
-              <textarea class="form-control" rows="4" [(ngModel)]="appealReason"
-                placeholder="Vui lòng trình bày rõ lý do (VD: Em làm đúng câu 3 nhưng chưa được tính điểm...)"></textarea>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-            <button type="button" class="btn btn-warning fw-bold" (click)="submitAppeal()"
-              [disabled]="!appealReason || appealReason.trim().length < 10">
-              Gửi đơn
-            </button>
-          </div>
+<!-- =====================================================
+     Appeal Modal – ĐẶT NGOÀI .animate-in để tránh lỗi
+     CSS transform context phá vỡ position:fixed
+     ===================================================== -->
+<div class="appeal-overlay" [class.visible]="showAppealModal" (click)="closeAppealModal($event)">
+  <div class="appeal-dialog" role="dialog" aria-modal="true">
+
+    <!-- Header -->
+    <div class="appeal-header">
+      <div class="appeal-title">
+        <i class="bi bi-flag-fill"></i>
+        Yêu cầu phúc khảo
+      </div>
+      <button class="appeal-close" (click)="closeAppealModal()" aria-label="Đóng">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="appeal-body" *ngIf="selectedScoreForAppeal">
+      <!-- Subject Info -->
+      <div class="appeal-subject-info">
+        <i class="bi bi-journal-text"></i>
+        <div>
+          <div class="appeal-subject-name">{{ selectedScoreForAppeal.subjectName }}</div>
+          <div class="appeal-subject-score">Điểm hiện tại: <strong>{{ selectedScoreForAppeal.totalScore | number:'1.1-1'
+              }}</strong></div>
         </div>
       </div>
+
+      <!-- Reason -->
+      <div class="appeal-field">
+        <label class="appeal-label">
+          Lý do phúc khảo <span style="color:#ef4444;">*</span>
+        </label>
+        <textarea class="appeal-textarea" rows="4" [(ngModel)]="appealReason"
+          placeholder="Vui lòng trình bày rõ lý do (VD: Em làm đúng câu 3, phần bài tập...)">
+        </textarea>
+        <div class="appeal-hint">Tối thiểu 10 ký tự</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="appeal-footer">
+      <button class="appeal-btn-cancel" (click)="closeAppealModal()">Hủy</button>
+      <button class="appeal-btn-submit" [disabled]="!appealReason || appealReason.trim().length < 10 || isSubmitting"
+        (click)="submitAppeal()">
+        <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1"></span>
+        <i *ngIf="!isSubmitting" class="bi bi-send-fill me-1"></i>
+        {{ isSubmitting ? 'Đang gửi...' : 'Gửi đơn' }}
+      </button>
     </div>
   </div>
 </div>

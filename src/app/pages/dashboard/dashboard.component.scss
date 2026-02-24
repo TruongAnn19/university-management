@@ -1,0 +1,185 @@
+/* ================================================
+   Dashboard – UniManage
+   ================================================ */
+
+/* ── Welcome Banner ── */
+.welcome-banner {
+    position: relative;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+    border-radius: 20px;
+    padding: 2rem 2.25rem;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(79, 70, 229, .28);
+}
+
+.welcome-content {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    position: relative;
+    z-index: 2;
+}
+
+.welcome-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, .1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, .2);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #a5b4fc;
+    flex-shrink: 0;
+}
+
+.welcome-text {
+    flex: 1;
+
+    h1 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0 0 .3rem;
+    }
+
+    p {
+        font-size: .85rem;
+        color: #a5b4fc;
+        margin: 0;
+    }
+}
+
+.welcome-badge {
+    padding: .35rem 1rem;
+    border-radius: 99px;
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    flex-shrink: 0;
+
+    &.badge-admin {
+        background: rgba(219, 39, 119, .25);
+        color: #f9a8d4;
+        border: 1px solid rgba(219, 39, 119, .4);
+    }
+
+    &.badge-teacher {
+        background: rgba(8, 145, 178, .25);
+        color: #67e8f9;
+        border: 1px solid rgba(8, 145, 178, .4);
+    }
+
+    &.badge-student {
+        background: rgba(99, 102, 241, .25);
+        color: #a5b4fc;
+        border: 1px solid rgba(99, 102, 241, .4);
+    }
+}
+
+/* Decorative */
+.banner-deco-1,
+.banner-deco-2 {
+    position: absolute;
+    border-radius: 50%;
+    opacity: .07;
+    background: #fff;
+    pointer-events: none;
+}
+
+.banner-deco-1 {
+    width: 220px;
+    height: 220px;
+    top: -70px;
+    right: -40px;
+}
+
+.banner-deco-2 {
+    width: 140px;
+    height: 140px;
+    bottom: -40px;
+    right: 80px;
+}
+
+/* ── Section title ── */
+.section-title {
+    font-size: .8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+}
+
+/* ── Quick Action Cards ── */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.quick-card {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    padding: 1.25rem;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+    transition: all .22s cubic-bezier(.4, 0, .2, 1);
+    animation: fadeInUp .35s ease both;
+    position: relative;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, .1);
+        border-color: #c7d2fe;
+
+        .qc-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+}
+
+.qc-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .2);
+}
+
+.qc-label {
+    font-size: .9rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.qc-desc {
+    font-size: .78rem;
+    color: #94a3b8;
+    flex: 1;
+}
+
+.qc-arrow {
+    font-size: .85rem;
+    color: #6366f1;
+    align-self: flex-end;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all .2s;
+}

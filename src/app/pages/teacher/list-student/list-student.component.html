@@ -1,139 +1,173 @@
-<div class="container mt-4">
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-primary text-white p-3">
-            <h5 class="mb-0"><i class="bi bi-people-fill me-2"></i>Danh Sách Sinh Viên Theo Khoa</h5>
-        </div>
+<div class="animate-in">
 
-        <div class="card-body">
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control" placeholder="Nhập mã khoa (VD: CNTT, QTDK...)"
-                            [(ngModel)]="facultyCode" (keyup.enter)="getStudents()">
-                        <button class="btn btn-primary" (click)="getStudents()" [disabled]="isLoading">
-                            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
-                            Tìm kiếm
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="text-center">#</th>
-                            <th class="text-center">Mã SV</th>
-                            <th class="text-center">Họ và Tên</th>
-                            <th class="text-center">Lớp</th>
-                            <th class="text-center">Khoa</th>
-                            <th class="text-center">Trạng thái</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let s of students; let i = index">
-                            <td class="text-center">{{ i + 1 }}</td>
-                            <td class="fw-bold text-primary text-center">{{ s.studentCode }}</td>
-                            <td class="text-center">{{ s.fullName }}</td>
-                            <td class="text-center">{{ s.className }}</td>
-                            <td class="text-center">
-                                <span class="badge bg-info text-dark">{{ s.facultyName }}</span>
-                            </td>
-                            <td class="text-center">
-                                <span class="badge" [ngClass]="s.status === 'STUDYING' ? 'bg-success' : 'bg-secondary'">
-                                    {{ s.status }}
-                                </span>
-                            </td>
-                        </tr>
-
-                        <tr *ngIf="students.length === 0 && !isLoading">
-                            <td colspan="7" class="text-center py-5 text-muted">
-                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                Không tìm thấy sinh viên nào cho mã khoa này.
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  <!-- Page Header with Add Button -->
+  <div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+      <h1 class="page-title">Danh sách Sinh viên</h1>
+      <p class="page-subtitle">Tra cứu sinh viên theo mã khoa</p>
     </div>
-</div>
-
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>Danh sách sinh viên</h3>
-    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createStudentModal">
-      <i class="bi bi-plus-circle me-2"></i>Thêm sinh viên mới
+    <button class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#createStudentModal">
+      <i class="bi bi-plus-lg me-1"></i> Thêm sinh viên
     </button>
   </div>
 
+  <!-- Search Card -->
+  <div class="uni-card mb-4">
+    <div class="search-box" style="max-width: 480px;">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-search ps-3 pe-2" style="color:#94a3b8;"></i>
+        <input type="text" class="form-control border-0 shadow-none ps-1" placeholder="Nhập mã khoa (VD: CNTT, QTDK...)"
+          [(ngModel)]="facultyCode" (keyup.enter)="getStudents()">
+        <button class="btn btn-primary rounded-pill px-4 m-1" (click)="getStudents()" [disabled]="isLoading">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+          <i *ngIf="!isLoading" class="bi bi-search me-1"></i>
+          Tìm kiếm
+        </button>
+      </div>
+    </div>
   </div>
 
+  <!-- Table Card -->
+  <div class="uni-card p-0" style="overflow:hidden;">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead style="background:#f8fafc;">
+          <tr style="font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:#64748b;">
+            <th class="ps-4 py-3">#</th>
+            <th>Mã SV</th>
+            <th>Họ và Tên</th>
+            <th>Lớp</th>
+            <th>Khoa</th>
+            <th class="text-center pe-4">Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of students; let i = index">
+            <td class="ps-4" style="color:#94a3b8; font-size:.8rem;">{{ i + 1 }}</td>
+            <td>
+              <span style="font-weight:700; color:#4f46e5; font-family:monospace;">{{ s.studentCode }}</span>
+            </td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div style="width:30px; height:30px; background:linear-gradient(135deg,#eef2ff,#e0e7ff);
+                  border-radius:8px; display:flex; align-items:center; justify-content:center;
+                  font-size:.8rem; font-weight:700; color:#4f46e5; flex-shrink:0;">
+                  {{ s.fullName?.charAt(0) }}
+                </div>
+                <span style="font-size:.875rem; font-weight:500;">{{ s.fullName }}</span>
+              </div>
+            </td>
+            <td style="font-size:.875rem;">{{ s.className }}</td>
+            <td>
+              <span class="badge rounded-pill"
+                style="background:#eef2ff; color:#4f46e5; border:1px solid #c7d2fe; font-size:.72rem; padding:.3rem .7rem;">
+                {{ s.facultyName }}
+              </span>
+            </td>
+            <td class="text-center pe-4">
+              <span class="badge rounded-pill" style="font-size:.72rem; padding:.3rem .8rem;" [ngClass]="s.status === 'STUDYING' ?
+                  'bg-success-subtle text-success border border-success-subtle' :
+                  'bg-secondary-subtle text-secondary border border-secondary-subtle'">
+                {{ s.status === 'STUDYING' ? 'Đang học' : s.status }}
+              </span>
+            </td>
+          </tr>
+
+          <tr *ngIf="students.length === 0 && !isLoading">
+            <td colspan="6" class="text-center py-5" style="color:#94a3b8;">
+              <i class="bi bi-inbox" style="font-size:2.5rem; display:block; margin-bottom:.75rem; opacity:.5;"></i>
+              <div style="font-weight:600;">Nhập mã khoa để tìm kiếm sinh viên</div>
+              <div style="font-size:.83rem; margin-top:.3rem;">VD: CNTT, ATTT, QTDK...</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Create Student Modal – ngoài animate-in -->
 <div class="modal fade" id="createStudentModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="modalLabel">Thêm mới sinh viên</h5>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:16px; overflow:hidden;">
+
+      <div class="modal-header text-white border-0 py-3" style="background: linear-gradient(135deg, #059669, #10b981);">
+        <h5 class="modal-title fw-bold" id="modalLabel" style="font-size:.95rem;">
+          <i class="bi bi-person-plus-fill me-2"></i> Thêm mới sinh viên
+        </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      
+
       <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
         <div class="modal-body p-4">
-          <h6 class="text-primary fw-bold mb-3">Tài khoản đăng nhập</h6>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label small fw-bold">Username</label>
-              <input type="text" class="form-control" formControlName="username"
-                     [class.is-invalid]="studentForm.get('username')?.invalid && studentForm.get('username')?.touched">
+
+          <div class="mb-3 pb-3 border-bottom">
+            <div class="fw-bold mb-3"
+              style="font-size:.85rem; color:#4f46e5; text-transform:uppercase; letter-spacing:.06em;">
+              <i class="bi bi-shield-lock-fill me-1"></i> Tài khoản đăng nhập
             </div>
-            <div class="col-md-6">
-              <label class="form-label small fw-bold">Mật khẩu</label>
-              <input type="password" class="form-control" formControlName="password"
-                     [class.is-invalid]="studentForm.get('password')?.invalid && studentForm.get('password')?.touched">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Username</label>
+                <input type="text" class="form-control" formControlName="username" style="border-radius:10px;"
+                  [class.is-invalid]="studentForm.get('username')?.invalid && studentForm.get('username')?.touched">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Mật khẩu</label>
+                <input type="password" class="form-control" formControlName="password" style="border-radius:10px;"
+                  [class.is-invalid]="studentForm.get('password')?.invalid && studentForm.get('password')?.touched">
+              </div>
             </div>
           </div>
 
-          <h6 class="text-primary fw-bold mb-3">Thông tin cá nhân</h6>
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label small fw-bold">Mã sinh viên</label>
-              <input type="text" class="form-control" formControlName="studentCode"
-                     [class.is-invalid]="studentForm.get('studentCode')?.invalid && studentForm.get('studentCode')?.touched">
+          <div>
+            <div class="fw-bold mb-3"
+              style="font-size:.85rem; color:#4f46e5; text-transform:uppercase; letter-spacing:.06em;">
+              <i class="bi bi-person-badge-fill me-1"></i> Thông tin cá nhân
             </div>
-            <div class="col-md-6">
-              <label class="form-label small fw-bold">Họ và tên</label>
-              <input type="text" class="form-control" formControlName="fullName"
-                     [class.is-invalid]="studentForm.get('fullName')?.invalid && studentForm.get('fullName')?.touched">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label small fw-bold">Lớp</label>
-              <input type="text" class="form-control" formControlName="className"
-                     [class.is-invalid]="studentForm.get('className')?.invalid && studentForm.get('className')?.touched">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label small fw-bold">Ngày sinh</label>
-              <input type="date" class="form-control" formControlName="dob"
-                     [class.is-invalid]="studentForm.get('dob')?.invalid && studentForm.get('dob')?.touched">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label small fw-bold">Mã khoa</label>
-              <input type="text" class="form-control" formControlName="facultyCode"
-                     [class.is-invalid]="studentForm.get('facultyCode')?.invalid && studentForm.get('facultyCode')?.touched">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label small fw-bold">Năm nhập học</label>
-              <input type="text" class="form-control" formControlName="enrollment_year"
-                     [class.is-invalid]="studentForm.get('enrollment_year')?.invalid && studentForm.get('enrollment_year')?.touched">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Mã sinh viên</label>
+                <input type="text" class="form-control" formControlName="studentCode" style="border-radius:10px;"
+                  [class.is-invalid]="studentForm.get('studentCode')?.invalid && studentForm.get('studentCode')?.touched">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Họ và tên</label>
+                <input type="text" class="form-control" formControlName="fullName" style="border-radius:10px;"
+                  [class.is-invalid]="studentForm.get('fullName')?.invalid && studentForm.get('fullName')?.touched">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Lớp</label>
+                <input type="text" class="form-control" formControlName="className" style="border-radius:10px;"
+                  [class.is-invalid]="studentForm.get('className')?.invalid && studentForm.get('className')?.touched">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Ngày sinh</label>
+                <input type="date" class="form-control" formControlName="dob" style="border-radius:10px;"
+                  [class.is-invalid]="studentForm.get('dob')?.invalid && studentForm.get('dob')?.touched">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Mã khoa</label>
+                <input type="text" class="form-control" formControlName="facultyCode" style="border-radius:10px;"
+                  [class.is-invalid]="studentForm.get('facultyCode')?.invalid && studentForm.get('facultyCode')?.touched">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Năm nhập học</label>
+                <input type="text" class="form-control" formControlName="enrollment_year" style="border-radius:10px;"
+                  [class.is-invalid]="studentForm.get('enrollment_year')?.invalid && studentForm.get('enrollment_year')?.touched">
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="modal-footer bg-light">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalBtn">Hủy</button>
-          <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+        <div class="modal-footer border-0 px-4 pb-4">
+          <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal"
+            id="closeModalBtn">Hủy</button>
+          <button type="submit" class="btn btn-success rounded-pill px-5" [disabled]="isSubmitting">
             <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1"></span>
-            Lưu thông tin
+            <i *ngIf="!isSubmitting" class="bi bi-check-lg me-1"></i>
+            {{ isSubmitting ? 'Đang lưu...' : 'Lưu thông tin' }}
           </button>
         </div>
       </form>

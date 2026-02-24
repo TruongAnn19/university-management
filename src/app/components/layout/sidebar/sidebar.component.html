@@ -1,55 +1,101 @@
-<div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; height: 100vh;">
-  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-    <span class="fs-4 fw-bold">Uni Management</span>
-  </a>
-  <hr>
-  <ul class="nav nav-pills flex-column mb-auto">
-    <li class="nav-item">
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link text-white">
-        <i class="fa fa-home me-2"></i> Tổng quan
-      </a>
-    </li>
+<aside class="sidebar">
 
-    <li class="nav-header mt-3 text-uppercase text-muted" style="font-size: 0.8rem;">Đào tạo</li>
-    <li>
-      <a routerLink="/students" routerLinkActive="active" class="nav-link text-white">
-        <i class="fa fa-user-graduate me-2"></i> Quản lý Sinh viên
-      </a>
-    </li>
-    <li>
-      <a routerLink="/subjects" routerLinkActive="active" class="nav-link text-white">
-        <i class="fa fa-book me-2"></i> Môn học
-      </a>
-    </li>
-    <li>
-      <a routerLink="/classes" routerLinkActive="active" class="nav-link text-white">
-        <i class="fa fa-chalkboard-teacher me-2"></i> Lớp học phần
-      </a>
-    </li>
-
-    <li class="nav-header mt-3 text-uppercase text-muted" style="font-size: 0.8rem;">Quản lý Điểm</li>
-    <li>
-      <a routerLink="/grades/input" routerLinkActive="active" class="nav-link text-white">
-        <i class="fa fa-edit me-2"></i> Nhập điểm
-      </a>
-    </li>
-    <li>
-      <a routerLink="/grades/transcript" routerLinkActive="active" class="nav-link text-white">
-        <i class="fa fa-file-alt me-2"></i> Bảng điểm tổng hợp
-      </a>
-    </li>
-  </ul>
-  <hr>
-  
-  <div class="dropdown">
-    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-      <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-      <strong>Admin</strong>
-    </a>
-    <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-      <li><a class="dropdown-item" href="#">Hồ sơ</a></li>
-      <li><hr class="dropdown-divider"></li>
-      <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
-    </ul>
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <i class="bi bi-mortarboard-fill"></i>
+    </div>
+    <div class="logo-text">
+      <span class="logo-name">UniManage</span>
+      <span class="logo-sub">Quản lý Đại học</span>
+    </div>
   </div>
-</div>
+
+  <!-- Navigation -->
+  <nav class="sidebar-nav">
+
+    <!-- Trang chủ -->
+    <div class="nav-section">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" id="nav-dashboard">
+        <div class="nav-icon"><i class="bi bi-grid-fill"></i></div>
+        <span class="nav-label">Trang chủ</span>
+      </a>
+      <a routerLink="/profile/me" routerLinkActive="active" class="nav-item" id="nav-profile">
+        <div class="nav-icon"><i class="bi bi-person-circle"></i></div>
+        <span class="nav-label">Thông tin cá nhân</span>
+      </a>
+    </div>
+
+    <!-- Student Menu -->
+    <ng-container *ngIf="isStudent">
+      <div class="nav-section-label">Sinh viên</div>
+      <div class="nav-section">
+        <a routerLink="/my-scores" routerLinkActive="active" class="nav-item" id="nav-my-scores">
+          <div class="nav-icon"><i class="bi bi-bar-chart-fill"></i></div>
+          <span class="nav-label">Kết quả học tập</span>
+        </a>
+        <a routerLink="/register-course" routerLinkActive="active" class="nav-item" id="nav-register-course">
+          <div class="nav-icon"><i class="bi bi-journal-plus"></i></div>
+          <span class="nav-label">Đăng ký tín chỉ</span>
+        </a>
+      </div>
+    </ng-container>
+
+    <!-- Admin / Teacher Menu -->
+    <ng-container *ngIf="isAdminOrTeacher">
+      <div class="nav-section-label">Quản lý điểm</div>
+      <div class="nav-section">
+        <a routerLink="/manage-scores" routerLinkActive="active" class="nav-item" id="nav-manage-scores">
+          <div class="nav-icon"><i class="bi bi-pencil-square"></i></div>
+          <span class="nav-label">Quản lý điểm</span>
+        </a>
+        <a routerLink="/appeals" routerLinkActive="active" class="nav-item" id="nav-appeals">
+          <div class="nav-icon"><i class="bi bi-shield-check"></i></div>
+          <span class="nav-label">Duyệt phúc khảo</span>
+        </a>
+        <a routerLink="/list-student" routerLinkActive="active" class="nav-item" id="nav-list-student">
+          <div class="nav-icon"><i class="bi bi-people-fill"></i></div>
+          <span class="nav-label">Danh sách sinh viên</span>
+        </a>
+      </div>
+
+      <div class="nav-section-label">Nhập dữ liệu</div>
+      <div class="nav-section">
+        <a routerLink="/import-scores" routerLinkActive="active" class="nav-item" id="nav-import-scores">
+          <div class="nav-icon"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+          <span class="nav-label">Import Điểm</span>
+        </a>
+        <a routerLink="/import-students" routerLinkActive="active" class="nav-item" id="nav-import-students">
+          <div class="nav-icon"><i class="bi bi-person-plus-fill"></i></div>
+          <span class="nav-label">Import Sinh viên</span>
+        </a>
+        <a routerLink="/import-teachers" routerLinkActive="active" class="nav-item" id="nav-import-teachers">
+          <div class="nav-icon"><i class="bi bi-person-badge-fill"></i></div>
+          <span class="nav-label">Import Giảng viên</span>
+        </a>
+        <a routerLink="/import-subjects" routerLinkActive="active" class="nav-item" id="nav-import-subjects">
+          <div class="nav-icon"><i class="bi bi-book-fill"></i></div>
+          <span class="nav-label">Import Môn học</span>
+        </a>
+        <a routerLink="/import-semesters" routerLinkActive="active" class="nav-item" id="nav-import-semesters">
+          <div class="nav-icon"><i class="bi bi-calendar3"></i></div>
+          <span class="nav-label">Import Học kỳ</span>
+        </a>
+      </div>
+    </ng-container>
+
+  </nav>
+
+  <!-- User Card -->
+  <div class="sidebar-user" (click)="logout()" title="Đăng xuất" id="btn-sidebar-logout">
+    <div class="user-avatar">{{ userInitial }}</div>
+    <div class="user-info">
+      <div class="user-name">{{ userName }}</div>
+      <div class="user-role">{{ userRole }}</div>
+    </div>
+    <div class="logout-icon">
+      <i class="bi bi-box-arrow-right"></i>
+    </div>
+  </div>
+
+</aside>

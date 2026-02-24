@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -23,7 +23,7 @@ declare var bootstrap: any;
   styleUrl: './list-student.component.scss'
 })
 
-export class ListStudentComponent implements OnInit{
+export class ListStudentComponent {
   private http = inject(HttpClient);
   private fb = inject(FormBuilder);
 
@@ -36,8 +36,7 @@ export class ListStudentComponent implements OnInit{
   isSubmitting = false;
 
   constructor() {
-    const fb = inject(FormBuilder);
-    this.studentForm = fb.group({
+    this.studentForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
       password: ['', [Validators.required]],
       studentCode: ['', [Validators.required]],
@@ -49,8 +48,6 @@ export class ListStudentComponent implements OnInit{
     });
   }
 
-  ngOnInit(): void {
-  }
 
   getStudents() {
     if (!this.facultyCode.trim()) {

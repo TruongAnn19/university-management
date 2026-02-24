@@ -1,30 +1,102 @@
-<div class="login-container">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <h2>Đăng nhập Hệ thống</h2>
+<div class="login-wrapper">
+  <!-- Left Panel: Branding -->
+  <div class="login-brand-panel">
+    <div class="brand-content">
+      <div class="brand-logo">
+        <i class="bi bi-mortarboard-fill"></i>
+      </div>
+      <h1 class="brand-title">UniManage</h1>
+      <p class="brand-tagline">Hệ thống Quản lý Trường Đại học thông minh, hiện đại, hiệu quả.</p>
 
-    <div class="form-group">
-      <label>Username</label>
-      <input type="text" formControlName="username" class="form-control">
+      <div class="brand-features">
+        <div class="feature-item">
+          <div class="feature-icon"><i class="bi bi-shield-check-fill"></i></div>
+          <div>
+            <div class="feature-title">Bảo mật cao</div>
+            <div class="feature-desc">Xác thực đa lớp, bảo vệ dữ liệu tuyệt đối</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="bi bi-bar-chart-line-fill"></i></div>
+          <div>
+            <div class="feature-title">Báo cáo thông minh</div>
+            <div class="feature-desc">Thống kê điểm số, học phần theo thời gian thực</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="bi bi-people-fill"></i></div>
+          <div>
+            <div class="feature-title">Đa vai trò</div>
+            <div class="feature-desc">Hỗ trợ Admin, Giảng viên và Sinh viên</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label>Password</label>
-      <input type="password" formControlName="password" class="form-control">
+    <!-- Decorative circles -->
+    <div class="deco-circle deco-1"></div>
+    <div class="deco-circle deco-2"></div>
+    <div class="deco-circle deco-3"></div>
+  </div>
+
+  <!-- Right Panel: Form -->
+  <div class="login-form-panel">
+    <div class="form-card animate-in">
+      <div class="form-header">
+        <div class="form-logo">
+          <i class="bi bi-mortarboard-fill"></i>
+        </div>
+        <h2>Chào mừng trở lại!</h2>
+        <p>Đăng nhập để tiếp tục quản lý hệ thống</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <div class="input-group-custom">
+          <label for="username">
+            <i class="bi bi-person-fill"></i>
+            Tên đăng nhập
+          </label>
+          <div class="input-wrapper">
+            <input id="username" type="text" formControlName="username" class="form-control"
+              placeholder="Nhập username của bạn" autocomplete="username">
+          </div>
+        </div>
+
+        <div class="input-group-custom">
+          <label for="password">
+            <i class="bi bi-lock-fill"></i>
+            Mật khẩu
+          </label>
+          <div class="input-wrapper">
+            <input id="password" type="password" formControlName="password" class="form-control"
+              placeholder="Nhập mật khẩu của bạn" autocomplete="current-password">
+          </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="error-alert">
+          <i class="bi bi-exclamation-circle-fill"></i>
+          {{ errorMessage }}
+        </div>
+
+        <button type="submit" class="btn-login" [disabled]="loginForm.invalid || isLoading" id="btn-login">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+          <i *ngIf="!isLoading" class="bi bi-box-arrow-in-right me-2"></i>
+          {{ isLoading ? 'Đang xử lý...' : 'Đăng nhập' }}
+        </button>
+      </form>
+
+      <div class="form-footer">
+        <a href="/register" class="register-link">
+          <i class="bi bi-person-plus-fill me-1"></i>
+          Bạn chưa có tài khoản? Liên hệ Admin
+        </a>
+      </div>
+
+      <p class="captcha-terms">
+        Trang này được bảo vệ bởi reCAPTCHA của Google.
+        <a href="https://policies.google.com/privacy" target="_blank">Chính sách bảo mật</a> &
+        <a href="https://policies.google.com/terms" target="_blank">Điều khoản dịch vụ</a> áp dụng.
+      </p>
     </div>
-
-    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-
-    <button type="submit" [disabled]="loginForm.invalid || isLoading">
-      <span *ngIf="isLoading">Đang xử lý...</span>
-      <span *ngIf="!isLoading">Đăng nhập</span>
-    </button>
-
-    <p style="font-size: 13px;"><a href="/register">Bạn chưa có tài khoản?</a></p>
-
-    <p class="captcha-terms">
-      This site is protected by reCAPTCHA and the Google
-      <a href="https://policies.google.com/privacy">Privacy Policy</a> and
-      <a href="https://policies.google.com/terms">Terms of Service</a> apply.
-    </p>
-  </form>
+  </div>
 </div>

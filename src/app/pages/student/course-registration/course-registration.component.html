@@ -1,29 +1,35 @@
-<div class="reg-container">
-  <div class="header-box">
-    <h2>📝 Đăng ký Tín chỉ</h2>
-    <p class="sub-text">Học kỳ hiện tại đang mở đăng ký. Vui lòng chọn lớp cẩn thận.</p>
+<div class="animate-in">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Đăng ký Tín chỉ</h1>
+      <p class="page-subtitle">Học kỳ hiện tại đang mở đăng ký – vui lòng chọn lớp cẩn thận</p>
+    </div>
   </div>
 
+  <!-- Filter -->
   <div class="filter-card">
     <div class="filter-group">
-      <label for="facultySelect">Lọc theo Khoa/Viện:</label>
+      <label for="facultySelect">
+        <i class="bi bi-funnel-fill me-1" style="color:#6366f1;"></i> Khoa / Viện:
+      </label>
       <select id="facultySelect" [(ngModel)]="selectedFacultyId" (change)="onFacultyChange()" class="form-select"
         [disabled]="isLoading">
-
         <option [ngValue]="null">-- Tất cả / Môn dùng chung --</option>
-
-        <option *ngFor="let f of faculties" [value]="f.id">
-          {{ f.facultyName }}
-        </option>
+        <option *ngFor="let f of faculties" [value]="f.id">{{ f.facultyName }}</option>
       </select>
     </div>
     <div class="loading-spinner" *ngIf="isLoading"></div>
   </div>
 
+  <!-- Alerts -->
   <div *ngIf="message" class="alert" [ngClass]="isError ? 'alert-danger' : 'alert-success'">
+    <i [class]="isError ? 'bi bi-x-circle-fill me-2' : 'bi bi-check-circle-fill me-2'"></i>
     {{ message }}
   </div>
 
+  <!-- Table -->
   <div class="table-responsive">
     <table class="custom-table">
       <thead>
@@ -43,13 +49,13 @@
           <td class="class-code">{{ c.classCode }}</td>
           <td class="subject-name">{{ c.subjectName }}</td>
           <td>
-            <span class="badge faculty-badge">{{ c.facultyName || 'Đại Cương' }}</span>
+            <span class="faculty-badge">{{ c.facultyName || 'Đại Cương' }}</span>
           </td>
           <td>
             <div class="time-box">
               <small class="semester-name">{{ c.semesterName }}</small>
               <div class="date-range">
-                {{ c.startDate | date:'dd/MM/yyyy' }} - {{ c.endDate | date:'dd/MM/yyyy' }}
+                {{ c.startDate | date:'dd/MM/yyyy' }} – {{ c.endDate | date:'dd/MM/yyyy' }}
               </div>
             </div>
           </td>
@@ -63,14 +69,11 @@
 
           <td class="text-center">
             <ng-container *ngIf="getCourseStatus(c) as status">
-              <span class="badge" [ngClass]="status.class">
-                {{ status.text }}
-              </span>
+              <span class="badge" [ngClass]="status.class">{{ status.text }}</span>
             </ng-container>
           </td>
 
           <td class="text-center">
-
             <button *ngIf="c.isMyClass" class="btn-cancel" (click)="onCancel(c.classCode)" [disabled]="isLoading">
               Hủy
             </button>
@@ -82,26 +85,26 @@
 
             <button *ngIf="!c.isRegistered && c.studyStatus !== 'PASSED' && c.timeStatus === 'OPEN'"
               class="btn-register" (click)="onRegister(c.classCode)"
-              [disabled]="c.currentSlot >= c.maxSlot || isLoading"> {{ c.currentSlot >= c.maxSlot ? 'Hết chỗ' : 'Đăng
-              ký' }}
+              [disabled]="c.currentSlot >= c.maxSlot || isLoading">
+              {{ c.currentSlot >= c.maxSlot ? 'Hết chỗ' : 'Đăng ký' }}
             </button>
 
             <button *ngIf="!c.isRegistered && c.studyStatus !== 'PASSED' && c.timeStatus === 'WAITING'"
-              class="btn-disabled" disabled>
-              Đăng ký
-            </button>
+              class="btn-disabled" disabled>Đăng ký</button>
 
             <button *ngIf="!c.isRegistered && c.studyStatus !== 'PASSED' && c.timeStatus === 'EXPIRED'"
-              class="btn-disabled" disabled>
-              Đăng ký
-            </button>
-
+              class="btn-disabled" disabled>Đăng ký</button>
           </td>
         </tr>
+
         <tr *ngIf="classes.length === 0 && !isLoading">
-          <td colspan="7" class="empty-row">Không tìm thấy lớp học phần nào.</td>
+          <td colspan="8" class="empty-row">
+            <i class="bi bi-inbox" style="font-size:1.5rem; display:block; margin-bottom:.5rem; opacity:.4;"></i>
+            Không tìm thấy lớp học phần nào.
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
+
 </div>

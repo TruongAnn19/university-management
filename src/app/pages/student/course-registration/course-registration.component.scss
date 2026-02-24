@@ -1,276 +1,329 @@
-.reg-container {
-  padding: 20px;
-  background-color: #f8f9fa;
-  min-height: 100vh;
-}
+/* ================================================
+   Course Registration – Student Page (Cleaned up)
+   ================================================ */
 
+
+/* Header */
 .header-box {
-  margin-bottom: 20px;
-  h2 { margin: 0; color: #2c3e50; }
-  .sub-text { color: #7f8c8d; margin-top: 5px; }
+  margin-bottom: 1.5rem;
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .sub-text {
+    color: #64748b;
+    margin-top: .3rem;
+    font-size: .875rem;
+  }
 }
 
-/* --- Filter --- */
+/* Filter card */
 .filter-card {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  margin-bottom: 20px;
+  background: #fff;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .05);
+  margin-bottom: 1.25rem;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 1rem;
 
   .filter-group {
     display: flex;
     align-items: center;
-    gap: 10px;
-    label { font-weight: 600; color: #34495e; }
+    gap: .75rem;
+
+    label {
+      font-weight: 600;
+      font-size: .875rem;
+      color: #374151;
+      white-space: nowrap;
+    }
+
     .form-select {
-      padding: 8px 12px;
-      border: 1px solid #bdc3c7;
-      border-radius: 4px;
-      min-width: 250px;
-      font-size: 14px;
-      &:focus { outline: none; border-color: #3498db; }
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      min-width: 240px;
+      font-size: .875rem;
+
+      &:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, .15);
+      }
     }
   }
 }
 
-/* --- Alerts --- */
-.alert {
-  padding: 15px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  font-weight: 500;
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e2e8f0;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
-.alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-.alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
-/* --- Table --- */
+/* Alerts */
+.alert {
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: .875rem;
+}
+
+.alert-success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #065f46;
+}
+
+.alert-danger {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+/* Table */
 .custom-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: white;
-  border-radius: 8px;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+  border: 1px solid #e2e8f0;
+  font-size: .875rem;
 
   thead {
-    background-color: #34495e;
-    color: white;
-    th { padding: 15px; font-weight: 500; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
+    background: #1e293b;
+
+    th {
+      padding: .875rem 1rem;
+      font-weight: 600;
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #94a3b8;
+      text-align: center;
+
+      &:first-child {
+        text-align: left;
+        padding-left: 1.25rem;
+      }
+    }
   }
 
   tbody tr {
-    border-bottom: 1px solid #ecf0f1;
-    transition: background 0.2s;
-    &:hover { background-color: #f1f2f6; }
-    &:last-child { border-bottom: none; }
+    border-bottom: 1px solid #f1f5f9;
+    transition: background .15s;
+
+    &:hover {
+      background: #f8faff;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &.row-registered {
+      background: #f0fdf4;
+      border-left: 3px solid #10b981;
+    }
   }
 
-  td { padding: 12px 15px; vertical-align: middle; color: #2c3e50; }
+  td {
+    padding: .75rem 1rem;
+    vertical-align: middle;
+    color: #0f172a;
+    text-align: center;
+
+    &:first-child {
+      text-align: left;
+      padding-left: 1.25rem;
+    }
+  }
 }
 
-.text-center { text-align: center; }
-.bold { font-weight: bold; }
-.class-code { font-weight: bold; color: #2980b9; font-family: monospace; font-size: 1.1em; }
-.subject-name { font-weight: 500; }
+.text-center {
+  text-align: center;
+}
 
-/* --- Badges & Status --- */
-.badge {
-  padding: 5px 10px;
-  border-radius: 12px;
-  font-size: 0.8rem;
+.bold {
+  font-weight: 700;
+}
+
+.class-code {
+  font-weight: 700;
+  color: #4f46e5;
+  font-family: 'Courier New', monospace;
+}
+
+.subject-name {
+  font-weight: 500;
+}
+
+/* Faculty badge */
+.faculty-badge {
+  background: #f1f5f9;
+  color: #475569;
+  padding: .25rem .6rem;
+  border-radius: 6px;
+  font-size: .75rem;
   font-weight: 600;
 }
 
-.faculty-badge { background-color: #e0e0e0; color: #555; }
-.status-open { background-color: #e8f8f5; color: #27ae60; }
-.status-full { background-color: #fdedec; color: #c0392b; }
-
-.status-passed {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
-}
-
-.status-retake {
-  background-color: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffeeba;
-  animation: pulse 2s infinite; 
-}
-
-.status-learning {
-  background-color: #e0f2fe;
-  color: #0284c7;            
-  border: 1px solid #bae6fd;
+/* Status badges */
+.badge {
+  padding: .3rem .75rem;
+  border-radius: 99px;
+  font-size: .75rem;
+  font-weight: 600;
+  display: inline-block;
+  min-width: 88px;
+  text-align: center;
 }
 
 .status-open {
-  background-color: #dcfce7;
-  color: #16a34a;
+  background: #dcfce7;
+  color: #15803d;
   border: 1px solid #bbf7d0;
-  cursor: pointer;
-  
-  &:hover {
-    background-color: #16a34a;
-    color: white;
-    transition: 0.3s;
-  }
-}
-
-.status-waiting {
-  background-color: #fef3c7;
-  color: #d97706;
-  border: 1px solid #fde68a;
 }
 
 .status-full {
-  background-color: #fee2e2;
+  background: #fee2e2;
   color: #dc2626;
   border: 1px solid #fecaca;
 }
 
+.status-waiting {
+  background: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fde68a;
+}
+
 .status-closed {
-  background-color: #f3f4f6;
+  background: #f3f4f6;
   color: #6b7280;
   border: 1px solid #e5e7eb;
 }
 
-.status-retake {
-  background-color: #f3e8ff;
-  color: #9333ea;
-  border: 1px solid #e9d5ff;
-}
-
 .status-passed {
-  background-color: #ccfbf1;
+  background: #ccfbf1;
   color: #0d9488;
   border: 1px solid #99f6e4;
 }
 
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.7; }
-  100% { opacity: 1; }
+.status-retake {
+  background: #f3e8ff;
+  color: #9333ea;
+  border: 1px solid #e9d5ff;
 }
 
-.slot-info {
-  font-weight: 600;
-  &.text-danger { color: #e74c3c; }
+.status-learning {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
 }
 
-/* --- Buttons --- */
+/* Time box */
+.time-box {
+  .semester-name {
+    color: #94a3b8;
+    font-size: .72rem;
+    display: block;
+  }
+
+  .date-range {
+    font-size: .78rem;
+    font-weight: 500;
+    color: #475569;
+  }
+}
+
+/* Action buttons */
 .btn-register {
-  background-color: #27ae60;
-  color: white;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #fff;
   border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
+  padding: .35rem .875rem;
+  border-radius: 8px;
+  font-size: .78rem;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
+  transition: all .2s;
 
-  &:hover { background-color: #2ecc71; transform: translateY(-1px); }
-  &:active { transform: translateY(0); }
-  
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(79, 70, 229, .3);
+  }
+
   &:disabled {
-    background-color: #bdc3c7;
+    background: #cbd5e1;
     cursor: not-allowed;
     transform: none;
   }
 }
 
-.empty-row { text-align: center; padding: 30px; color: #7f8c8d; font-style: italic; }
-
-.action-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px; /* Khoảng cách giữa chữ Đang học và nút Hủy */
-}
-
-.status-learning {
-  color: #27ae60;
-  font-weight: bold;
-  font-size: 0.9em;
-  background: #eafaf1;
-  padding: 4px 8px;
-  border-radius: 4px;
-}
-
 .btn-cancel {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: 0.2s;
-
-  &:hover { background-color: #c0392b; }
-  &:disabled { background-color: #bdc3c7; cursor: not-allowed; }
-}
-
-/* ... css cũ ... */
-
-/* Highlight dòng đang học */
-.row-registered {
-  background-color: #f0fdf4; /* Màu xanh nhạt nền */
-  border-left: 3px solid #27ae60;
-}
-
-/* Các Badge trạng thái */
-.badge {
-  padding: 6px 10px;
-  border-radius: 15px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  display: inline-block;
-  min-width: 90px; /* Để các badge thẳng hàng nhau */
-  text-align: center;
-}
-
-.status-learning {
-  background-color: #27ae60; 
-  color: white; 
-  box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
-}
-
-.status-passed { background-color: #d1fae5; color: #065f46; }
-.status-full { background-color: #fee2e2; color: #991b1b; }
-.status-retake { background-color: #fef3c7; color: #92400e; }
-.status-open { background-color: #e0f2fe; color: #075985; }
-
-/* Buttons */
-.btn-cancel {
-  background-color: #fff;
-  border: 1px solid #ef4444;
+  background: #fff;
+  border: 1.5px solid #ef4444;
   color: #ef4444;
-  padding: 6px 12px;
-  border-radius: 4px;
+  padding: .35rem .875rem;
+  border-radius: 8px;
+  font-size: .78rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
-  &:hover { background-color: #ef4444; color: white; }
-}
+  transition: all .2s;
 
-.btn-register {
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  &:hover { background-color: #2563eb; }
-  &:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+  &:hover:not(:disabled) {
+    background: #ef4444;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+  }
 }
 
 .btn-disabled {
-  background: none; border: none; color: #ccc; cursor: default; font-weight: bold;
+  background: none;
+  border: none;
+  color: #cbd5e1;
+  font-size: .78rem;
+  cursor: default;
+}
+
+/* Empty row */
+.empty-row {
+  text-align: center;
+  padding: 2.5rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .65;
+  }
 }

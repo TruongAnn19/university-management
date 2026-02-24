@@ -1,21 +1,48 @@
-<div class="import-container">
-  <h2>📥 Import Danh Sách Sinh Viên</h2>
-  <p class="guide">Vui lòng sử dụng file Excel (.xlsx) theo mẫu quy định.</p>
+<div class="import-container animate-in">
 
-  <div class="upload-box">
-    <input type="file" (change)="onFileSelected($event)" accept=".xlsx, .xls" class="file-input">
-    
+  <!-- Header -->
+  <div class="import-header page-header">
+    <div>
+      <h1 class="page-title">Import Sinh viên</h1>
+      <p class="page-subtitle">Tải lên file Excel để thêm sinh viên vào hệ thống hàng loạt</p>
+    </div>
+  </div>
+
+  <!-- Upload Card -->
+  <div class="upload-card">
+
+    <!-- Drop Zone -->
+    <label class="upload-zone" for="fileInputStudents">
+      <div class="upload-zone-icon">
+        <i class="bi bi-cloud-arrow-up-fill"></i>
+      </div>
+      <div class="upload-zone-title">Kéo thả file vào đây hoặc nhấn để chọn</div>
+      <div class="upload-zone-hint">Hỗ trợ định dạng <strong>.xlsx</strong>, <strong>.xls</strong></div>
+      <input id="fileInputStudents" type="file" class="file-input" (change)="onFileSelected($event)"
+        accept=".xlsx, .xls">
+    </label>
+
+    <!-- File Info -->
     <div *ngIf="selectedFile" class="file-info">
-      📄 {{ selectedFile.name }} ({{ (selectedFile.size / 1024) | number:'1.0-2' }} KB)
+      <i class="bi bi-file-earmark-excel-fill"></i>
+      <span>{{ selectedFile.name }} <small style="color:#10b981; font-size:.78rem;">({{ (selectedFile.size / 1024) |
+          number:'1.0-2' }} KB)</small></span>
     </div>
 
-    <button (click)="onUpload()" [disabled]="!selectedFile || isLoading" class="upload-btn">
-      <span *ngIf="isLoading">⏳ Đang xử lý...</span>
-      <span *ngIf="!isLoading">🚀 Tải lên hệ thống</span>
-    </button>
+    <!-- Action -->
+    <div class="upload-actions">
+      <button class="upload-btn" (click)="onUpload()" [disabled]="!selectedFile || isLoading" id="btn-upload-students">
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+        <i *ngIf="!isLoading" class="bi bi-upload"></i>
+        {{ isLoading ? 'Đang xử lý...' : 'Tải lên hệ thống' }}
+      </button>
+    </div>
   </div>
 
+  <!-- Result -->
   <div *ngIf="message" class="alert" [ngClass]="{'alert-success': !isError, 'alert-danger': isError}">
+    <i [class]="isError ? 'bi bi-x-circle-fill' : 'bi bi-check-circle-fill'"></i>
     {{ message }}
   </div>
+
 </div>

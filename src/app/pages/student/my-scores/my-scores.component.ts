@@ -6,8 +6,6 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { TranscriptResponse } from '../../../models/score/score.model';
 import { AppealRequest, AppealService } from '../../../services/appeal/appeal.service';
 
-declare var bootstrap: any;
-
 @Component({
   selector: 'app-my-scores',
   standalone: true,
@@ -24,64 +22,67 @@ export class MyScoresComponent implements OnInit {
   isLoading = true;
   errorMessage = '';
 
+  // Modal state – Angular-native, không dùng bootstrap.Modal
+  showAppealModal = false;
   selectedScoreForAppeal: any = null;
-  appealReason: string = '';
+  appealReason = '';
+  isSubmitting = false;
 
   ngOnInit() {
-    this.isLoading = true
     this.scoreService.getMyTranscript().subscribe({
-      next: (data) => {
-        this.transcript = data;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.errorMessage = 'Lỗi tải bảng điểm';
-        this.isLoading = false;
-      }
+      next: (data) => { this.transcript = data; this.isLoading = false; },
+      error: () => { this.errorMessage = 'Lỗi tải bảng điểm'; this.isLoading = false; }
     });
   }
 
+  // ─── Modal open / close ───────────────────────────────
   openAppealModal(score: any) {
-    console.log(score);
     this.selectedScoreForAppeal = score;
     this.appealReason = '';
-    const modal = new bootstrap.Modal(document.getElementById('appealModal'));
-    modal.show();
+    this.isSubmitting = false;
+    this.showAppealModal = true;
+    // Ngăn scroll body khi modal mở
+    document.body.style.overflow = 'hidden';
   }
 
+  closeAppealModal(event?: MouseEvent) {
+    // Chỉ đóng khi click vào overlay (nền tối), không phải dialog bên trong
+    if (event && (event.target as HTMLElement).closest('.appeal-dialog')) return;
+    this._closeModal();
+  }
+
+  private _closeModal() {
+    this.showAppealModal = false;
+    document.body.style.overflow = '';
+  }
+
+  // ─── Submit ───────────────────────────────────────────
   submitAppeal() {
-    console.log('Dữ liệu gửi đi:', {
-      scoreId: this.selectedScoreForAppeal?.id,
-      reason: this.appealReason
-    });
-    if (!this.selectedScoreForAppeal) return;
-    const btnClose = document.querySelector('#appealModal .btn-close') as HTMLElement;
+    if (!this.selectedScoreForAppeal || this.appealReason.trim().length < 10) return;
+
+    this.isSubmitting = true;
     const request: AppealRequest = {
       scoreId: this.selectedScoreForAppeal.id,
       reason: this.appealReason
     };
+
     this.appealService.createAppeal(request).subscribe({
       next: () => {
+        this.isSubmitting = false;
+        this._closeModal();
         alert('Đã gửi đơn phúc khảo thành công!');
-        btnClose?.click();
       },
-
       error: (err) => {
+        this.isSubmitting = false;
         let message = 'Có lỗi xảy ra, vui lòng thử lại sau.';
         if (typeof err.error === 'string') {
-          try {
-            const parsedError = JSON.parse(err.error);
-            message = parsedError.message;
-          } catch (e) {
-            message = err.error;
-          }
-        }
-        else if (err.error && err.error.message) {
+          try { message = JSON.parse(err.error).message; }
+          catch { message = err.error; }
+        } else if (err.error?.message) {
           message = err.error.message;
         }
-
         alert(message);
-        btnClose?.click();
+        this._closeModal();
       }
     });
   }
