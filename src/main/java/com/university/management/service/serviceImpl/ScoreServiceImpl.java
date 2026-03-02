@@ -45,7 +45,7 @@ public class ScoreServiceImpl implements ScoreService {
     private final StudentStatusHelper statusHelper;
 
     @Override
-//    @CacheEvict(value = "student_scores", key = "#request.studentCode()")
+    // @CacheEvict(value = "student_scores", key = "#request.studentCode()")
     public ScoreDto recordScore(ScoreRequestDto request) {
         String currentUsername = "SYSTEM";
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
@@ -53,7 +53,8 @@ public class ScoreServiceImpl implements ScoreService {
         }
 
         Student student = studentRepository.findByStudentCode(request.getStudentCode())
-                .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy sinh viên mã " + request.getStudentCode()));
+                .orElseThrow(
+                        () -> new RuntimeException("Lỗi: Không tìm thấy sinh viên mã " + request.getStudentCode()));
 
         Subject subject = subjectRepository.findBySubjectCode(request.getSubjectCode())
                 .orElseThrow(() -> new RuntimeException("Lỗi: Không tìm thấy môn học mã " + request.getSubjectCode()));
@@ -108,7 +109,7 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     @Transactional
-// @Cacheable(value = "student_scores", key = "#studentCode")
+    // @Cacheable(value = "student_scores", key = "#studentCode")
     public TranscriptResponse getStudentTranscript(String studentCode) {
         // 1. Tìm thông tin sinh viên
         Student student = studentRepository.findByStudentCode(studentCode)
@@ -142,8 +143,7 @@ public class ScoreServiceImpl implements ScoreService {
                 faculty.getFacultyName(),
                 result.status().name(),
                 result.message(),
-                scoresDto
-        );
+                scoresDto);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     @Transactional
-//    @CacheEvict(value = "student_scores", allEntries = true)
+    // @CacheEvict(value = "student_scores", allEntries = true)
     public void importScores(MultipartFile file) {
         if (file.isEmpty()) {
             throw new RuntimeException("File excel rỗng");
@@ -170,35 +170,94 @@ public class ScoreServiceImpl implements ScoreService {
             Sheet sheet = workbook.getSheetAt(0);
             DataFormatter dataFormatter = new DataFormatter();
 
+            // 1. Quét 1 vòng Excel, gom hết các Mã SV và Mã Môn Học
+            java.util.Set<String> studentCodes = new java.util.HashSet<>();
+            java.util.Set<String> subjectCodes = new java.util.HashSet<>();
+
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
-                if (row == null) continue;
+                if (row == null)
+                    continue;
+                String studentCode = dataFormatter.formatCellValue(row.getCell(0)).trim();
+                String subjectCode = dataFormatter.formatCellValue(row.getCell(1)).trim();
+                if (!studentCode.isEmpty() && !subjectCode.isEmpty()) {
+                    studentCodes.add(studentCode);
+                    subjectCodes.add(subjectCode);
+                }
+            }
+
+            if (studentCodes.isEmpty())
+                return;
+
+            // 2. Truy vấn dữ liệu một lần (Batch Select)
+            java.util.Map<String, Student> studentMap = studentRepository.findByStudentCodeIn(studentCodes)
+                    .stream().collect(java.util.stream.Collectors.toMap(Student::getStudentCode, s -> s));
+
+            java.util.Map<String, Subject> subjectMap = subjectRepository.findBySubjectCodeIn(subjectCodes)
+                    .stream().collect(java.util.stream.Collectors.toMap(Subject::getSubjectCode, s -> s));
+
+            List<Registration> bulkRegistrations = registrationRepository.findByStudent_StudentCodeIn(studentCodes);
+
+            List<Score> existingScores = scoreRepository.findByStudent_StudentCodeInAndSemester(studentCodes,
+                    currentSemester);
+
+            java.util.Map<String, Score> existingScoreMap = existingScores.stream()
+                    .collect(java.util.stream.Collectors.toMap(
+                            s -> s.getStudent().getStudentCode() + "_" + s.getSubject().getSubjectCode(),
+                            s -> s,
+                            (s1, s2) -> s1));
+
+            List<Score> scoresToSave = new java.util.ArrayList<>();
+            java.util.Set<String> updatedStudentCodes = new java.util.HashSet<>();
+
+            String currentUsername = "SYSTEM";
+            if (SecurityContextHolder.getContext().getAuthentication() != null) {
+                currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+            }
+
+            // 3. Lặp qua Excel lần 2 xử lý logic và tạo List
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null)
+                    continue;
 
                 String studentCode = dataFormatter.formatCellValue(row.getCell(0)).trim();
                 String subjectCode = dataFormatter.formatCellValue(row.getCell(1)).trim();
 
-                if (studentCode.isEmpty() || subjectCode.isEmpty()) continue;
-
-                boolean exists = scoreRepository.findByStudent_StudentCodeAndSubject_SubjectCodeAndSemester(
-                        studentCode, subjectCode, currentSemester
-                ).isPresent();
-
-                if (exists) {
+                if (studentCode.isEmpty() || subjectCode.isEmpty())
                     continue;
+
+                Student student = studentMap.get(studentCode);
+                Subject subject = subjectMap.get(subjectCode);
+
+                if (student == null)
+                    throw new RuntimeException("Không tìm thấy sinh viên mã " + studentCode + " tại dòng " + (i + 1));
+                if (subject == null)
+                    throw new RuntimeException("Không tìm thấy môn học mã " + subjectCode + " tại dòng " + (i + 1));
+
+                String mapKey = studentCode + "_" + subjectCode;
+
+                if (existingScoreMap.containsKey(mapKey)) {
+                    continue; // Bỏ qua nếu đã có điểm
                 }
 
-                List<Registration> registrations = registrationRepository
-                        .findByStudent_StudentCodeAndCourseClass_Subject_SubjectCode(studentCode, subjectCode);
+                // Kiểm tra đăng ký môn học
+                List<Registration> studentRegs = bulkRegistrations.stream()
+                        .filter(r -> r.getStudent().getStudentCode().equals(studentCode)
+                                && r.getCourseClass().getSubject().getSubjectCode().equals(subjectCode))
+                        .toList();
 
-                if (registrations.isEmpty()) {
-                    throw new RuntimeException(studentCode + "CHƯA TỪNG ĐĂNG KÝ môn " + subjectCode + ". Không thể nhập điểm!");
+                if (studentRegs.isEmpty()) {
+                    throw new RuntimeException(
+                            studentCode + " CHƯA TỪNG ĐĂNG KÝ môn " + subjectCode + ". Không thể nhập điểm!");
                 }
 
-                boolean isStudying = registrations.stream()
+                boolean isStudying = studentRegs.stream()
                         .anyMatch(r -> Boolean.TRUE.equals(r.getCourseClass().getSemester().getIsActive()));
 
                 if (isStudying) {
-                    throw new RuntimeException("Sinh viên đang trong thời gian học môn " + subjectCode + ". Vui lòng đợi kết thúc học kỳ để nhập điểm.");
+                    throw new RuntimeException("Sinh viên đang trong thời gian học môn " + subjectCode
+                            + ". Vui lòng đợi kết thúc học kỳ để nhập điểm.");
                 }
 
                 double processScore = 0.0;
@@ -213,14 +272,34 @@ public class ScoreServiceImpl implements ScoreService {
                     throw new RuntimeException("Lỗi định dạng điểm số tại dòng " + (i + 1));
                 }
 
-                var requestDto = new ScoreRequestDto(
-                        studentCode,
-                        subjectCode,
-                        processScore,
-                        finalScore
-                );
+                Score scoreToSave = Score.builder()
+                        .student(student)
+                        .subject(subject)
+                        .semester(currentSemester)
+                        .processScore(processScore)
+                        .finalScore(finalScore)
+                        .build();
+                scoreToSave.calculateTotal(); // Explicit manual calculation before saves
 
-                this.recordScore(requestDto);
+                scoresToSave.add(scoreToSave);
+                updatedStudentCodes.add(studentCode);
+            }
+
+            // 4. Lưu Batch
+            if (!scoresToSave.isEmpty()) {
+                List<Score> savedScores = scoreRepository.saveAll(scoresToSave);
+
+                // Ghi log và update GPA
+                for (Score s : savedScores) {
+                    String newValueStr = String.format("Process: %.1f, Final: %.1f", s.getProcessScore(),
+                            s.getFinalScore());
+                    auditService.logAction("CREATE_SCORE", "SCORE", s.getId().toString(), "N/A", newValueStr,
+                            currentUsername);
+                }
+
+                for (String stuCode : updatedStudentCodes) {
+                    studentService.updateStudentGpa(stuCode);
+                }
             }
 
         } catch (IOException e) {
@@ -229,6 +308,5 @@ public class ScoreServiceImpl implements ScoreService {
             throw new RuntimeException("Lỗi dữ liệu tại dòng đang xử lý: " + e.getMessage());
         }
     }
-
 
 }

@@ -11,15 +11,20 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface StudentRepository extends JpaRepository<Student,Long> {
+public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByStudentCode(String studentCode);
+
     Optional<Student> findByUser_Username(String username);
+
+    List<Student> findByStudentCodeIn(java.util.Collection<String> studentCodes);
+
     @Query("SELECT new com.university.management.model.dto.StatPair(f.facultyName, COUNT(s)) " +
             "FROM Student s JOIN s.faculty f " +
             "GROUP BY f.facultyName")
     List<StatPair> countStudentsByFaculty();
 
     Optional<Student> findByUserId(Long id);
+
     List<Student> findByFaculty_FacultyCode(String facultyCode);
 
     Page<Student> findByStatusIn(List<StudentStatus> statuses, Pageable pageable);
